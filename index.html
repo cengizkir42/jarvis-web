@@ -1,0 +1,2480 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JARVIS — AI Crypto Trading Assistant</title>
+<style>
+:root{--bg:#010712;--cyan:#00eaff;--blue:#087cff;--green:#00f58b;--red:#ff3e4d;--yellow:#ffd23f;--text:#d8fbff;--muted:#6fa6b7;--line:#0c6881}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#01050d;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}body{overflow-x:hidden;background:radial-gradient(circle at 52% 40%,#06334a 0,#031221 25%,#01050d 62%)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(0,234,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,234,255,.025) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,#fff,transparent 90%)}
+.shell{max-width:1600px;margin:auto;padding:10px 12px 14px}.topbar{height:58px;border-bottom:1px solid #0c5470;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}.brand{font-weight:900;font-size:26px;letter-spacing:5px;color:#b9fbff;text-shadow:0 0 18px #00dfff}.brand small{display:block;font-size:9px;letter-spacing:2px;color:#57aabd;margin-top:-2px}.nav{display:flex;gap:34px;font-size:11px;color:#56bfd8;letter-spacing:.8px}.topstatus{display:flex;align-items:center;gap:14px;font-size:11px}.dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--green);box-shadow:0 0 15px var(--green)}
+.hud{display:grid;grid-template-columns:280px minmax(440px,1fr) 300px;gap:10px;margin-top:10px}.bottom{display:grid;grid-template-columns:145px minmax(400px,1fr) 330px 270px;gap:10px;margin-top:10px}.panel{position:relative;border:1px solid #0b5268;background:linear-gradient(145deg,rgba(4,20,34,.94),rgba(1,10,19,.88));box-shadow:inset 0 0 30px rgba(0,214,255,.035),0 0 24px rgba(0,168,255,.05);clip-path:polygon(0 12px,12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px));overflow:hidden}.panel:after{content:"";position:absolute;inset:3px;pointer-events:none;border:1px solid rgba(0,234,255,.035)}.phead{padding:13px 15px 7px;color:#64dff3;font-size:13px;font-weight:800;letter-spacing:1px}.phead:before{content:"◈";color:var(--cyan);margin-right:8px}.list{padding:0 12px 10px}.coinrow{display:grid;grid-template-columns:30px 1fr 74px 62px;align-items:center;gap:6px;padding:8px 2px;border-bottom:1px solid rgba(58,142,160,.13);font-size:11px}.coinicon{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#00131a;background:linear-gradient(145deg,#fff,#43dfff);box-shadow:0 0 12px #00dfff88}.coinrow b{display:block;font-size:12px}.sub{color:#769ead;font-size:10px}.pct.up{color:var(--green)}.pct.down{color:var(--red)}.signal{justify-self:end;padding:5px 10px;border-radius:5px;font-size:10px;font-weight:900;box-shadow:0 0 13px currentColor}.buy{background:#00d97b;color:#001c13}.sell{background:#ff3348;color:white}.wait{background:#ffd22d;color:#171100}.metric{display:flex;justify-content:space-between;padding:9px 14px;border-top:1px solid rgba(44,132,151,.14);font-size:11px}.metric span:first-child{color:#6e9eab}.metric strong{color:#d8fbff}
+.corepanel{min-height:570px;position:relative;background:radial-gradient(circle at 50% 47%,rgba(0,211,255,.13),transparent 29%),linear-gradient(180deg,#021321,#01060e)}.corepanel:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 25%,rgba(0,136,255,.04) 50%,transparent 72%)}.core{position:absolute;left:50%;top:49%;width:min(410px,60%);aspect-ratio:1;transform:translate(-50%,-50%);display:grid;place-items:center}.core:before,.core:after{content:"";position:absolute;border-radius:50%;inset:7%;border:1px solid rgba(0,238,255,.7);box-shadow:0 0 35px rgba(0,234,255,.25),inset 0 0 35px rgba(0,234,255,.12);animation:spin 13s linear infinite}.core:after{inset:17%;border-style:dashed;border-color:#0a88b9;animation:spin 9s linear reverse infinite}.sphere{width:47%;aspect-ratio:1;border-radius:50%;position:relative;background:radial-gradient(circle at 37% 30%,#dfffff 0,#36dbff 12%,#087cff 42%,#002d62 70%,#00101e 100%);box-shadow:0 0 30px #00dfff,0 0 90px #008cffaa,inset 0 0 35px #baffff;display:grid;place-items:center;z-index:2;overflow:hidden}.sphere:before{content:"";position:absolute;inset:-30%;background:repeating-radial-gradient(ellipse at center,transparent 0 9px,rgba(0,255,255,.16) 10px 11px);transform:rotate(22deg);animation:spin 8s linear infinite}.sphereText{z-index:3;text-align:center;text-shadow:0 0 12px #00eaff}.sphereText strong{display:block;font-size:25px;letter-spacing:2px}.sphereText span{font-size:11px;color:#61eaff}.orbit{position:absolute;border:1px solid rgba(0,231,255,.65);border-radius:50%;inset:0;animation:spin 17s linear infinite}.orbit.o2{inset:13%;transform:rotateX(67deg);animation-duration:11s}.orbit.o3{inset:-2%;transform:rotateY(62deg) rotateX(12deg);animation-duration:22s}.orbit.o4{inset:22%;transform:rotateX(78deg);animation-duration:8s}.sweep{position:absolute;width:47%;height:47%;border-radius:50%;background:conic-gradient(from 0deg,rgba(0,238,255,.0),rgba(0,238,255,.22),transparent 30%);z-index:4;animation:spin 4s linear infinite;mix-blend-mode:screen}.bubble{position:absolute;width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-size:15px;font-weight:900;z-index:5;background:radial-gradient(circle at 35% 30%,#fff,#35cfff 15%,#052a5d 70%);border:2px solid #2aeaff;box-shadow:0 0 22px #00dfff;transform:translate(-50%,-50%)}.b1{left:50%;top:3%}.b2{left:82%;top:21%}.b3{left:91%;top:58%}.b4{left:71%;top:91%}.b5{left:29%;top:91%}.b6{left:8%;top:57%}.b7{left:18%;top:20%}.bubble.al{border-color:var(--green);box-shadow:0 0 24px var(--green)}.bubble.sat{border-color:var(--red);box-shadow:0 0 24px var(--red)}.bubble.wait{border-color:var(--yellow);box-shadow:0 0 24px var(--yellow);color:#fff}.tag{position:absolute;bottom:-15px;right:-12px;padding:4px 10px;border-radius:4px;font-size:10px;color:#00120d;font-weight:900}.coretitle{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:#48d8ec;font-size:10px;letter-spacing:1px}.scanline{position:absolute;left:20%;right:20%;bottom:8px;height:2px;background:#0a5970;overflow:hidden}.scanline i{display:block;width:25%;height:100%;background:#00eaff;box-shadow:0 0 14px #00eaff;animation:scan 2.3s linear infinite}
+.voice{padding:10px 14px}.avatar{width:105px;height:105px;margin:8px auto;border-radius:50%;border:1px solid #16a8ff;box-shadow:0 0 25px #007cff88,inset 0 0 30px #007cff33;display:grid;place-items:center;font-size:46px;color:#64ddff}.speech{padding:10px;border:1px solid #125d76;border-radius:10px;color:#bcebf2;font-size:11px;line-height:1.5;background:#03111c}.mic{margin:12px auto;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#063c62;border:1px solid #12a9ff;color:#58e7ff;box-shadow:0 0 22px #008cff66;font-size:20px;cursor:pointer}.wave{height:34px;display:flex;align-items:center;justify-content:center;gap:3px}.wave i{width:3px;height:10px;background:#17d9ff;box-shadow:0 0 8px #17d9ff;animation:wave .9s ease-in-out infinite alternate}.wave i:nth-child(2n){animation-delay:.2s}.wave i:nth-child(3n){animation-delay:.4s}
+.commands{padding:10px 14px}.cmd{padding:6px 0;color:#73d8eb;font-size:10px}.analysis{padding:0 14px 10px}.analysis .item{padding:7px 0;border-bottom:1px solid rgba(50,150,180,.13);font-size:10px}.analysis .item b{display:flex;justify-content:space-between;color:#aeeef6}.analysis .item span{color:#63c9d9}
+.bottomnav{padding:6px}.navbtn{padding:11px 9px;color:#66b6c9;border-bottom:1px solid rgba(44,132,151,.16);font-size:10px}.navbtn.active{color:#00eaff;background:rgba(0,201,255,.07)}.chart{height:305px;padding:8px 12px}.charttop{display:flex;gap:15px;align-items:center;font-size:11px;color:#4ec9df}.chart canvas{width:100%;height:245px;display:block}.trade{padding-bottom:12px}.tabs{display:flex;padding:8px 10px 0;gap:4px}.tab{flex:1;text-align:center;padding:7px;border-radius:5px;background:#071a28;color:#7daab8;font-size:10px}.tab.on{background:#00bd70;color:#00180f}.form{padding:7px 12px}.field{margin:8px 0}.field label{display:block;color:#6798a6;font-size:10px;margin-bottom:4px}.field input,.field select{width:100%;background:#020b14;border:1px solid #14536a;color:#d9fbff;padding:8px;border-radius:5px}.send{width:100%;border:0;border-radius:7px;padding:12px;background:#00d879;color:#00160e;font-weight:900;cursor:pointer}.send.sell{background:#ff3348;color:#fff}.summary{padding:10px 13px;font-size:10px}.sumrow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(44,132,151,.13)}.sumrow b{color:#d9fbff}.switch{display:flex;justify-content:space-between;align-items:center;padding:12px 0;color:#aeeef6}.toggle{width:42px;height:22px;border-radius:20px;background:#19d984;position:relative;box-shadow:0 0 12px #00d87988}.toggle:after{content:"";position:absolute;right:3px;top:3px;width:16px;height:16px;background:#eaffff;border-radius:50%}.realwarn{margin:8px 0;padding:8px;border:1px solid #7d5c13;color:#ffd85a;background:#271b05;border-radius:6px;font-size:9px}.api{display:flex;gap:5px}.api button{flex:1;background:#062a3d;color:#77d9ec;border:1px solid #115a70;padding:8px;border-radius:5px;font-size:9px}
+.footerline{height:34px;display:flex;align-items:center;justify-content:center;color:#4a8799;font-size:9px;letter-spacing:1px}.statusbar{position:absolute;right:12px;bottom:12px;font-size:9px;color:#59d9ec}.flash{animation:flash .45s ease}.hidden{display:none}@keyframes spin{to{transform:rotate(360deg)}}@keyframes scan{to{transform:translateX(300%)}}@keyframes wave{to{height:28px}}@keyframes flash{50%{filter:brightness(1.8)}}
+@media(max-width:1100px){.hud{grid-template-columns:235px minmax(390px,1fr) 250px}.bottom{grid-template-columns:110px minmax(360px,1fr) 300px}.summary{display:none}}@media(max-width:820px){.nav{display:none}.hud{grid-template-columns:1fr}.corepanel{min-height:510px}.bottom{grid-template-columns:1fr}.bottomnav{display:flex;overflow:auto}.navbtn{min-width:100px;border-right:1px solid rgba(44,132,151,.16);border-bottom:0}.chart{height:280px}.chart canvas{height:220px}.summary{display:block}.topstatus{font-size:9px}}
+</style>
+
+<style id="jarvis-bubble-fix">
+.core .bubble{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex-direction:column !important;
+  gap:3px !important;
+  width:76px !important;
+  height:76px !important;
+  min-width:76px !important;
+  min-height:76px !important;
+  padding:8px !important;
+  box-sizing:border-box !important;
+  border-radius:50% !important;
+  overflow:visible !important;
+  white-space:nowrap !important;
+  text-align:center !important;
+  z-index:5 !important;
+}
+
+.core .bubble .tag{
+  position:static !important;
+  display:block !important;
+  margin:0 !important;
+  font-size:10px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+
+.core .bubble[data-bubble]{
+  font-size:13px !important;
+  font-weight:800 !important;
+  letter-spacing:.4px !important;
+}
+
+.core .bubble.selected{
+  transform:scale(1.15) !important;
+  z-index:20 !important;
+  box-shadow:0 0 18px currentColor,0 0 38px currentColor !important;
+}
+</style>
+
+
+<style id="jarvis-safe-core-animation">
+.core .sphere{
+  animation: jarvisSafePulse 2.8s ease-in-out infinite alternate !important;
+}
+@keyframes jarvisSafePulse{
+  from{
+    transform:scale(0.98);
+    filter:brightness(1);
+  }
+  to{
+    transform:scale(1.05);
+    filter:brightness(1.25);
+  }
+}
+</style>
+
+
+<style id="jarvis-holo-orbit-v3">
+.core .bubble[data-bubble]{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  margin:0 !important;
+  will-change:transform !important;
+  transition:filter .25s ease, box-shadow .25s ease !important;
+}
+
+.core .bubble[data-bubble].selected{
+  filter:brightness(1.4) !important;
+  z-index:30 !important;
+}
+
+.core .sweep{
+  transform-origin:50% 50% !important;
+  animation:jarvisRadarSweepV3 4.5s linear infinite !important;
+}
+
+.core .orbit{
+  animation:jarvisOrbitGlowV3 3s ease-in-out infinite alternate !important;
+}
+
+.core .orbit.o2{
+  animation-delay:-.8s !important;
+}
+
+.core .orbit.o3{
+  animation-delay:-1.6s !important;
+}
+
+.core .orbit.o4{
+  animation-delay:-2.4s !important;
+}
+
+@keyframes jarvisRadarSweepV3{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+@keyframes jarvisOrbitGlowV3{
+  from{opacity:.45}
+  to{opacity:.9}
+}
+</style>
+
+
+<style id="JARVIS_FINAL_TABLET_LAYOUT_V2">
+html,body{max-width:100%;overflow-x:hidden}.shell{width:100%;max-width:1600px;margin:0 auto}.bottomnav{position:relative;z-index:60}.trade{position:relative;z-index:70}.trade .send{position:relative;z-index:71}.navbtn{min-height:42px;display:flex;align-items:center;justify-content:center;padding:8px 6px}.coinrow[data-symbol]{cursor:pointer}.coinrow[data-symbol]:hover{outline:1px solid rgba(0,234,255,.35)}
+@media (min-width:821px){.bottom{align-items:start}.bottomnav{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);order:0}.chart{grid-column:1 / span 2}.trade{grid-column:3 / span 2}.summary{grid-column:5 / span 2}.trade,.chart,.summary{min-width:0}}
+@media (max-width:1100px) and (min-width:821px){.bottom{grid-template-columns:repeat(6,minmax(0,1fr))}.bottomnav{grid-column:1/-1}.chart{grid-column:1 / span 3}.trade{grid-column:4 / span 3}.summary{grid-column:1/-1}}
+@media (max-width:820px){.hud{grid-template-columns:1fr!important}.corepanel{min-height:430px!important}.bottom{display:flex!important;flex-direction:column!important}.bottomnav{order:0;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));position:sticky;top:0;background:rgba(2,12,22,.96);z-index:100}.chart{order:1;width:100%}.trade{order:2;width:100%;z-index:200}.summary{order:3;width:100%}.trade .form{grid-template-columns:1fr 1fr}.trade .send{grid-column:1/-1}.jarvis-live-title{flex-wrap:wrap}.jarvis-market-card{min-width:0}.jarvis-modal .modalgrid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.bottomnav{grid-template-columns:1fr 1fr}.trade .form{grid-template-columns:1fr}.trade .form .field:last-of-type,.trade .form .send{grid-column:1}.jarvis-market-card{padding:6px}.jarvis-modal{padding:12px}.jarvis-modal .modalgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar"><div class="brand">◈ JARVIS<small>AI CRYPTO TRADING ASSISTANT</small></div><div class="nav"><span>DAHA FAZLASINI GÖR</span><span>DAHA HIZLI KARAR VER</span><span>JARVIS SENİNLE</span></div><div class="topstatus"><span><i class="dot"></i> SİSTEM AKTİF</span><span>⌁</span><span id="clock">08:24</span></div></header>
+<div class="hud">
+<aside>
+<section class="panel"><div class="phead">FIRSAT RADARI</div><div class="list" id="radar"></div></section>
+<section class="panel" style="margin-top:10px"><div class="phead">PİYASA RADARI</div><div class="metric"><span>Toplam Piyasa Değeri</span><strong>3.24T $</strong></div><div class="metric"><span>24s Hacim</span><strong>128.7B $</strong></div><div class="metric"><span>BTC Hakimiyeti</span><strong>56.7%</strong></div><div class="metric"><span>Korku & Açgözlülük</span><strong>62</strong></div></section>
+</aside>
+<main class="panel corepanel">
+<div class="core"><div class="orbit"></div><div class="orbit o2"></div><div class="orbit o3"></div><div class="orbit o4"></div><div class="sweep"></div><div class="sphere"><div class="sphereText"><strong>JARVIS</strong><span>ANALİZ EDİYOR...</span></div></div>
+<div class="bubble wait b1" data-bubble="1">J<em class="tag wait">BEKLE</em></div>
+  <div class="bubble wait b2" data-bubble="2">J<em class="tag wait">BEKLE</em></div>
+  <div class="bubble wait b3" data-bubble="3">J<em class="tag wait">BEKLE</em></div>
+  <div class="bubble wait b4" data-bubble="4">J<em class="tag wait">BEKLE</em></div>
+  <div class="bubble wait b5" data-bubble="5">J<em class="tag wait">BEKLE</em></div>
+  <div class="bubble wait b6" data-bubble="6">J<em class="tag wait">BEKLE</em></div>
+  <div class="bubble wait b7" data-bubble="7">J<em class="tag wait">BEKLE</em></div></div>
+<div class="coretitle">CANLI TARAMA BAŞLATILIYOR...</div><div class="scanline"><i></i></div><div class="statusbar">◉ 0/0 TARANAN COIN</div>
+</main>
+<aside>
+<section class="panel voice"><div class="phead">JARVIS SESLİ ASİSTAN</div><div class="avatar">◉</div><div class="speech" id="speech">Merhaba. Piyasaları tarıyorum...<br>Hangi coin'i analiz edelim?</div><button class="mic" id="mic">🎙</button><div class="wave"> <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></section>
+<section class="panel commands"><div class="phead">KOMUT ÖRNEKLERİ</div><div class="cmd">• BTC analiz et</div><div class="cmd">• SOL'de fırsat var mı?</div><div class="cmd">• Alım yap 1000 TL</div><div class="cmd">• Satış emri ver</div><div class="cmd">• Açık emirleri göster</div><div class="cmd">• JARVIS, genel durumu söyle</div></section>
+<section class="panel analysis"><div class="phead">SON ANALİZ</div><div id="analysis"></div></section>
+</aside>
+</div>
+<div class="bottom">
+<nav class="panel bottomnav"><div class="navbtn active">⌁ CANLI GRAFİK</div><div class="navbtn">◉ İŞLEM PANELİ</div><div class="navbtn">◌ AÇIK EMİRLER</div><div class="navbtn">◷ İŞLEM GEÇMİŞİ</div><div class="navbtn">▣ PORTFÖY</div><div class="navbtn">⚙ AYARLAR</div></nav>
+<section class="panel chart"><div class="charttop"><b id="chartSymbol">BTC/TRY</b><span>1S</span><span>Binance TR</span><strong id="price">--</strong><span class="pct">--</span></div><canvas id="chart"></canvas></section>
+<section class="panel trade"><div class="tabs"><div class="tab on" id="buyTab">AL</div><div class="tab" id="sellTab">SAT</div></div><div class="tabs"><div class="tab on">Market</div><div class="tab">Limit</div><div class="tab">Stop-Limit</div></div><div class="form"><div class="field"><label>Coin</label><input id="symbol" value="BTC_TRY" autocomplete="off"></div><div class="field"><label>Tutar / Miktar</label><input id="qty" value="0.001" type="number" step="any"></div><div class="field"><label>Fiyat (Limit)</label><input id="limitPrice" value="" type="number" step="any"></div><div class="field"><label>Yaklaşık Tutar</label><input id="quote" value="--" disabled></div><button class="send" id="send">ALIM EMRİ GÖNDER</button></div></section>
+<section class="panel summary"><div class="phead">İŞLEM ÖZETİ</div><div class="sumrow"><span>Mevcut Bakiye</span><b id="summaryBalance">--</b></div><div class="sumrow"><span>Kullanılabilir</span><b id="summaryAvailable">--</b></div><div class="sumrow"><span>Toplam Portföy</span><b id="summaryPortfolio">--</b></div><div class="sumrow"><span>Günlük Kâr/Zarar</span><b id="summaryPnL">--</b></div><div class="switch"><span>GERÇEK İŞLEM MODU</span><span class="toggle"></span></div><div class="realwarn">⚠ Binance TR API bağlantısı aktif olduğunda gerçek emir gönderilebilir.</div><div class="api"><button>API AYARLARI</button><button>EMİR GEÇMİŞİ</button></div></section>
+</div>
+<div class="footerline">JARVIS CORE • ANALYSIS ONLINE • REAL TRADING CONTROLLED • PAPER TRADING READY</div>
+</div>
+<script>
+const radarSymbols=['BTC_TRY','ETH_TRY','SOL_TRY','SAND_TRY','DOGE_TRY','XRP_TRY','ADA_TRY','AVAX_TRY'];
+
+function jarvisFormatPrice(v){
+  const n=Number(v);
+  if(!Number.isFinite(n)) return '-';
+  return n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:8});
+}
+
+function jarvisSignal(item){
+  if(!item || item.error) return 'BEKLE';
+  return item.jarvisSignal || 'BEKLE';
+}
+
+function jarvisScore(item){
+  if(!item || item.error) return 0;
+  const n = Number(item.jarvisScore ?? 0);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function jarvisSignalClass(signal){
+  return signal==='AL'?'buy':signal==='SAT'?'sell':'wait';
+}
+
+async 
+
+function jarvisBubbleSelect(item){
+  if(!item) return;
+
+  const symbol = String(item.symbol || '').trim();
+  if(!symbol) return;
+
+  jarvisV10PanelOpen = true;
+  jarvisV10PanelSymbol = symbol;
+
+  if(typeof loadJarvisV10Detail === 'function'){
+    loadJarvisV10Detail(symbol);
+  }
+
+  // Secili coin bilgisini diger UI kodlarinin da kullanabilmesi icin sakla.
+  window.jarvisSelectedItem = item;
+  window.jarvisSelectedSymbol = symbol;
+
+  // V10 detay paneli kullanılacak.
+  // Eski 24s analiz ekranı burada tekrar yazılmayacak.
+  window.jarvisV10PanelOpen = true;
+
+  // Varsayilan sembol seciciyi de senkron tut.
+  const symbolInput = document.getElementById('symbol');
+  if(symbolInput){
+    symbolInput.value = symbol;
+  }
+
+  document.querySelectorAll('.bubble[data-bubble]').forEach(b => {
+    b.classList.remove('selected');
+  });
+
+  const clicked = document.querySelector(
+    `.bubble[data-bubble-symbol="${symbol}"]`
+  );
+
+  if(clicked){
+    clicked.classList.add('selected');
+  }
+}
+
+function updateJarvisBubbles(data){
+  const meta = data?._META || {};
+
+  const buys = Array.isArray(meta.topBuy) ? meta.topBuy.slice(0,3) : [];
+  const sells = Array.isArray(meta.topSell) ? meta.topSell.slice(0,2) : [];
+  const waits = Array.isArray(meta.topWait) ? meta.topWait.slice(0,2) : [];
+
+  const items = [
+    ...buys.map(x => ({item:x, type:'AL'})),
+    ...sells.map(x => ({item:x, type:'SAT'})),
+    ...waits.map(x => ({item:x, type:'BEKLE'}))
+  ].slice(0,7);
+
+  document.querySelectorAll('.bubble[data-bubble]').forEach((bubble, i) => {
+    const entry = items[i];
+
+    if(!entry || !entry.item){
+      bubble.className = 'bubble wait b' + (i + 1);
+      bubble.dataset.bubbleSymbol = '';
+      bubble.onclick = null;
+      bubble.textContent = 'JARVIS';
+
+      const tag = document.createElement('em');
+      tag.className = 'tag wait';
+      tag.textContent = 'BEKLE';
+      bubble.appendChild(tag);
+      return;
+    }
+
+    const item = entry.item;
+    const signal = item.jarvisSignal || entry.type || 'BEKLE';
+    const cls = signal === 'AL' ? 'al' : signal === 'SAT' ? 'sat' : 'wait';
+
+    const raw = String(item.symbol || '').replace('_TRY','');
+    const label = raw.length > 5 ? raw.slice(0,5) : raw;
+
+    bubble.className = `bubble ${cls} b${i + 1}`;
+    bubble.dataset.bubbleSymbol = String(item.symbol || '');
+    bubble.style.cursor = 'pointer';
+    bubble.onclick = () => jarvisBubbleSelect(item);
+    bubble.textContent = label || 'JARVIS';
+
+    const tag = document.createElement('em');
+    tag.className = `tag ${jarvisSignalClass(signal)}`;
+    tag.textContent = signal;
+    bubble.appendChild(tag);
+  });
+}
+
+function updateLegacySections(data){
+  updateJarvisBubbles(data);
+
+  // =====================================================
+  // GERÇEK BINANCE TR TARAMA DURUMU
+  // =====================================================
+  const meta = data?._META || {};
+
+  const totalSymbols = Number(meta.totalSymbols || 0);
+  const tickerMatched = Number(meta.tickerMatched || 0);
+
+  const scanCountText =
+    `◉ ${tickerMatched}/${totalSymbols} TARANAN COIN`;
+
+  // Sayaç
+  document.querySelectorAll('.statusbar').forEach(el => {
+    el.textContent = scanCountText;
+  });
+
+  // Tarama başlığı
+  document.querySelectorAll('.coretitle').forEach(el => {
+    if (totalSymbols > 0) {
+      el.innerHTML =
+        `CANLI TARAMA AKTİF... &nbsp; ${tickerMatched}/${totalSymbols} COIN ANALİZ EDİLİYOR...`;
+    } else {
+      el.textContent = 'CANLI TARAMA BAŞLATILIYOR...';
+    }
+  });
+
+
+  const radar=document.getElementById('radar');
+
+  if(radar){
+    const meta = data?._META || {};
+    const topBuy = Array.isArray(meta.topBuy) ? meta.topBuy.slice(0,5) : [];
+    const topSell = Array.isArray(meta.topSell) ? meta.topSell.slice(0,5) : [];
+
+    const rows = [
+      ...topBuy.map(item => ({item, type:'AL'})),
+      ...topSell.map(item => ({item, type:'SAT'}))
+    ];
+
+    radar.innerHTML = rows.map(({item,type}) => {
+      const symbol = item?.symbol || '';
+      const name = symbol.replace('_TRY','/TRY');
+      const change = Number(item?.priceChangePercent || 0);
+      const score = Number(item?.jarvisScore || 0);
+      const price = Number(item?.lastPrice || 0);
+
+      const changeText =
+        (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+
+      const signal =
+        item?.jarvisSignal || type || 'BEKLE';
+
+      const signalClass = jarvisSignalClass(signal);
+
+      return `<div class="coinrow" data-symbol="${symbol}" tabindex="0">
+        <div class="coinicon">${name[0] || '?'}</div>
+        <div>
+          <b>${name}</b>
+          <span class="sub">${jarvisFormatPrice(price)}</span>
+        </div>
+        <div class="pct ${change < 0 ? 'down' : 'up'}">${changeText}</div>
+        <span class="signal ${signalClass}">
+          ${signal} ${score.toFixed(1)}
+        </span>
+      </div>`;
+    }).join('');
+
+    if(!rows.length){
+      radar.innerHTML =
+        '<div class="coinrow"><div>JARVIS</div><div>Veri bekleniyor...</div></div>';
+    }
+  }
+
+  const analysis=document.getElementById('analysis');
+
+  if(analysis){
+    const analysisSymbols=['BTC_TRY','ETH_TRY','SOL_TRY'];
+
+    analysis.innerHTML=analysisSymbols.map(symbol=>{
+      const item=data?.[symbol];
+      if(!item || item.error) return '';
+
+      const name=symbol.replace('_TRY','/TRY');
+      const change=Number(item.priceChangePercent||0);
+      const changeText=(change>=0?'+':'')+change.toFixed(2)+'%';
+
+      let text='Piyasa verisi izleniyor.';
+      if(change>=3) text='Güçlü yükseliş momentumu.';
+      else if(change>=1) text='Yukarı yönlü momentum mevcut.';
+      else if(change<=-3) text='Güçlü satış baskısı.';
+      else if(change<=-1) text='Aşağı yönlü baskı mevcut.';
+
+      return `<div class="item">
+        <b><span>◉ ${name}</span>
+        <span class="pct ${change<0?'down':'up'}">${jarvisFormatPrice(item.lastPrice)} &nbsp; ${changeText}</span></b>
+        <div>${text}</div>
+      </div>`;
+    }).join('');
+  }
+
+  const btc=data?.BTC_TRY;
+
+  if(btc){
+    const price=Number(btc.lastPrice);
+
+    const priceEl=document.getElementById('price');
+    if(priceEl) priceEl.textContent=jarvisFormatPrice(price);
+
+    const limitEl=document.getElementById('limitPrice');
+    if(limitEl){
+      limitEl.value=price;
+      limitEl.dataset.jarvisLive='1';
+    }
+
+    const quoteEl=document.getElementById('quote');
+    const qtyEl=document.getElementById('qty');
+
+    if(quoteEl && qtyEl){
+      const qty=Number(qtyEl.value||0);
+      quoteEl.value=jarvisFormatPrice(price*qty)+' TRY';
+    }
+  }
+
+  const footer=document.querySelector('.footerline');
+  if(footer){
+    footer.textContent='JARVIS CORE • LIVE MARKET DATA • PAPER TRADING';
+  }
+}
+
+window.jarvisUpdateLegacySections=updateLegacySections;
+function clock(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
+const canvas=document.getElementById('chart'),ctx=canvas.getContext('2d');function draw(){const r=canvas.getBoundingClientRect(),d=devicePixelRatio||1;canvas.width=r.width*d;canvas.height=r.height*d;ctx.scale(d,d);const w=r.width,h=r.height;ctx.clearRect(0,0,w,h);ctx.strokeStyle='rgba(24,111,136,.22)';ctx.lineWidth=1;for(let x=0;x<w;x+=w/8){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=h/6){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}let pts=[];for(let i=0;i<70;i++){let x=i*w/69;let base=h*.63-(i*.002*h);let y=base-(Math.sin(i*.55)*18+Math.sin(i*.17)*22+i*1.4)+((i>38)?(i-38)*.5:0);pts.push([x,y])}ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.strokeStyle='#13e5ff';ctx.shadowBlur=10;ctx.shadowColor='#00eaff';ctx.lineWidth=2;ctx.stroke();ctx.shadowBlur=0;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fillStyle='rgba(0,180,255,.06)';ctx.fill();}draw();addEventListener('resize',draw);
+let side='BUY';document.getElementById('buyTab').onclick=()=>{side='BUY';buyTab.classList.add('on');sellTab.classList.remove('on');send.classList.remove('sell');send.textContent='ALIM EMRİ GÖNDER'};document.getElementById('sellTab').onclick=()=>{side='SELL';sellTab.classList.add('on');buyTab.classList.remove('on');send.classList.add('sell');send.textContent='SATIŞ EMRİ GÖNDER'};
+const send=document.getElementById('send');send.onclick=async()=>{const payload={symbol:document.getElementById('symbol').value,side,type:'MARKET',quantity:document.getElementById('qty').value,price:document.getElementById('limitPrice').value,confirm:'EXECUTE_REAL_ORDER'};if(!confirm('DİKKAT: Bu işlem gerçek para kullanabilir. Emri göndermek istiyor musun?'))return;send.disabled=true;send.textContent='EMİR GÖNDERİLİYOR...';try{let r=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});let x=await r.json();alert(r.ok?'Emir gönderildi.\n\n'+JSON.stringify(x,null,2):'Emir gönderilemedi.\n\n'+JSON.stringify(x,null,2))}catch(e){alert('Sunucuya bağlanılamadı.')}finally{send.disabled=false;send.textContent=side==='BUY'?'ALIM EMRİ GÖNDER':'SATIŞ EMRİ GÖNDER'}};
+</script>
+
+<!-- legacy live engine 1 removed: final controlled engine is sole writer -->
+
+
+<!-- JARVIS CANLI SENKRONIZASYON V2 -->
+<!-- legacy live engine 2 removed: final controlled engine is sole writer -->
+
+
+<!-- JARVIS FINAL LIVE PATCH -->
+<!-- legacy live engine 3 removed: final controlled engine is sole writer -->
+
+
+<!-- JARVIS SES MOTORU V4 - COIN SOZLUK + ALTERNATIF TANIMA -->
+<script>
+(() => {
+
+  const JARVIS_COINS = {
+    BTC: [
+      "BTC", "BITCOIN", "BIT COIN", "BIT KOIN", "BITKOIN",
+      "BİTCOİN", "BİT KOIN", "BİT KOIN"
+    ],
+    ETH: [
+      "ETH", "ETHEREUM", "ETERIYUM", "ETERYUM",
+      "ETHIRYUM", "ETHİRİYUM", "İTERYUM"
+    ],
+    SOL: [
+      "SOL", "SOLANA", "SOL AN", "SOLANA"
+    ],
+    SAND: [
+      "SAND", "SAND COIN", "SENT", "SANT"
+    ],
+    DOGE: [
+      "DOGE", "DOGECOIN", "DOGE COIN", "DOJ", "DOÇ",
+      "DOCE", "DOĞE", "DOGE COİN"
+    ],
+    XRP: [
+      "XRP", "RIPPLE", "RİPPLE", "RIPIL", "RİPIL"
+    ],
+    ADA: [
+      "ADA", "CARDANO", "KARDANO", "KARDAN O"
+    ],
+    AVAX: [
+      "AVAX", "AVALANCHE", "AVALANŞ", "AVALANC"
+    ]
+  };
+
+  function normalizeJarvis(text) {
+
+    return text
+      .toLocaleUpperCase("tr-TR")
+      .replace(/['’`]/g, " ")
+      .replace(/[.,!?;:()[\]{}]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function findJarvisCoin(text) {
+
+    const t = normalizeJarvis(text);
+
+    // Önce uzun isimleri kontrol et.
+    // Böylece "DOGECOIN" gibi ifadeler doğru yakalanır.
+    const orderedCoins = [
+      "BTC", "ETH", "SOL", "SAND",
+      "DOGE", "XRP", "ADA", "AVAX"
+    ];
+
+    for (const coin of orderedCoins) {
+
+      const aliases =
+        JARVIS_COINS[coin] || [];
+
+      for (const alias of aliases) {
+
+        const a =
+          normalizeJarvis(alias);
+
+        if (!a) continue;
+
+        const pattern =
+          new RegExp(
+            "(^|\\s)" +
+            a.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+            "(\\s|$)"
+          );
+
+        if (pattern.test(t)) {
+          return coin;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function isJarvisAnalysis(text) {
+
+    const t =
+      normalizeJarvis(text);
+
+    const commands = [
+      "ANALİZ",
+      "ANALIZ",
+      "ANALİZ ET",
+      "ANALIZ ET",
+      "FİYAT",
+      "FIYAT",
+      "NE DURUMDA",
+      "NE OLUYOR",
+      "BAK",
+      "İNCELE",
+      "INCELE",
+      "YORUMLA",
+      "PİYASA",
+      "PIYASA",
+      "HACİM",
+      "HACIM",
+      "GRAFİK",
+      "GRAFIK",
+      "SORUYORUM",
+      "SÖYLE",
+      "SOYLE"
+    ];
+
+    return commands.some(x =>
+      t.includes(x)
+    );
+  }
+
+  function jarvisSpeakV4(text) {
+
+    if (!("speechSynthesis" in window))
+      return;
+
+    window.speechSynthesis.cancel();
+
+    const u =
+      new SpeechSynthesisUtterance(text);
+
+    u.lang = "tr-TR";
+    u.rate = 0.95;
+    u.pitch = 1;
+    u.volume = 1;
+
+    const voices =
+      window.speechSynthesis.getVoices();
+
+    const tr =
+      voices.find(v =>
+        (v.lang || "")
+          .toLowerCase()
+          .startsWith("tr")
+      );
+
+    if (tr) u.voice = tr;
+
+    window.speechSynthesis.speak(u);
+  }
+
+  async function analyzeV4(
+    coin,
+    command
+  ) {
+
+    const speech =
+      document.getElementById("speech");
+
+    if (!speech) return;
+
+    speech.innerHTML =
+      "<b>Sen:</b> " +
+      command +
+      "<br><br>" +
+      "<b>JARVIS:</b> ⏳ " +
+      coin +
+      "/TRY analiz ediliyor...";
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/ticker?symbol=" +
+          coin +
+          "_TRY&_=" +
+          Date.now(),
+          {
+            method: "GET",
+            cache: "no-store"
+          }
+        );
+
+      if (!response.ok)
+        throw new Error(
+          "HTTP " +
+          response.status
+        );
+
+      const data =
+        await response.json();
+
+      if (!data.lastPrice)
+        throw new Error(
+          "Fiyat verisi bulunamadı"
+        );
+
+      const price =
+        Number(data.lastPrice);
+
+      const change =
+        Number(data.priceChangePercent);
+
+      const high =
+        Number(data.highPrice);
+
+      const low =
+        Number(data.lowPrice);
+
+      const volume =
+        Number(data.quoteVolume);
+
+      const priceText =
+        price.toLocaleString(
+          "tr-TR",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 4
+          }
+        );
+
+      const changeText =
+        (change >= 0 ? "+" : "") +
+        change.toFixed(2) +
+        "%";
+
+      let durum =
+        "Kısa vadede kararsız görünüm.";
+
+      if (change >= 5)
+        durum =
+          "Pozitif momentum güçlü.";
+
+      else if (change > 0)
+        durum =
+          "Pozitif bölgede.";
+
+      else if (change <= -5)
+        durum =
+          "Negatif momentum güçlü.";
+
+      const answer =
+        coin +
+        "/TRY canlı analiz sonucu. " +
+        "Fiyat " +
+        priceText +
+        " TRY. " +
+        "24 saatlik değişim " +
+        changeText +
+        ". " +
+        "En yüksek " +
+        high.toLocaleString("tr-TR") +
+        " TRY. " +
+        "En düşük " +
+        low.toLocaleString("tr-TR") +
+        " TRY. " +
+        "24 saatlik hacim " +
+        volume.toLocaleString("tr-TR", {
+          maximumFractionDigits: 0
+        }) +
+        " TRY. " +
+        durum;
+
+      speech.innerHTML =
+        "<b>Sen:</b> " +
+        command +
+        "<br><br>" +
+
+        "<b>JARVIS:</b> " +
+        coin +
+        "/TRY<br><br>" +
+
+        "💰 Fiyat: <b>" +
+        priceText +
+        " TRY</b><br>" +
+
+        "📈 24s: <b>" +
+        changeText +
+        "</b><br>" +
+
+        "🔺 Yüksek: " +
+        high.toLocaleString("tr-TR") +
+        " TRY<br>" +
+
+        "🔻 Düşük: " +
+        low.toLocaleString("tr-TR") +
+        " TRY<br>" +
+
+        "📊 Hacim: " +
+        volume.toLocaleString("tr-TR", {
+          maximumFractionDigits: 0
+        }) +
+        " TRY<br><br>" +
+
+        "🧠 <b>" +
+        durum +
+        "</b>";
+
+      jarvisSpeakV4(answer);
+
+    }
+    catch(e) {
+
+      console.error(
+        "JARVIS V4 API:",
+        e
+      );
+
+      speech.innerHTML =
+        "<b>JARVIS:</b> ⚠️ " +
+        "Piyasa verisine ulaşılamadı: " +
+        e.message;
+    }
+  }
+
+  function processJarvisV4(
+    command
+  ) {
+
+    const text =
+      command.trim();
+
+    const coin =
+      findJarvisCoin(text);
+
+    console.log(
+      "JARVIS KOMUT:",
+      text,
+      "COIN:",
+      coin
+    );
+
+    if (!coin) {
+
+      const speech =
+        document.getElementById(
+          "speech"
+        );
+
+      if (speech) {
+
+        speech.innerHTML =
+          "<b>Sen:</b> " +
+          text +
+          "<br><br>" +
+          "<b>JARVIS:</b> 🔎 " +
+          "Hangi coini analiz etmemi istediğini anlayamadım.<br><br>" +
+          "Örnek: BTC, Bitcoin, ETH, Ethereum, XRP, Ripple, DOGE, Dogecoin, ADA, Cardano, AVAX veya Avalanche.";
+
+      }
+
+      jarvisSpeakV4(
+        "Hangi coini analiz etmemi istediğini anlayamadım."
+      );
+
+      return;
+    }
+
+    // Coin bulunduysa analiz komutu açıkça söylenmiş
+    // veya kullanıcı coin adıyla doğrudan soru sormuşsa çalıştır.
+    if (
+      isJarvisAnalysis(text) ||
+      text.length <= 25
+    ) {
+
+      analyzeV4(
+        coin,
+        text
+      );
+
+      return;
+    }
+
+    analyzeV4(
+      coin,
+      text
+    );
+  }
+
+  const mic =
+    document.getElementById("mic");
+
+  if (mic) {
+
+    mic.onclick = () => {
+
+      const SR =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+      if (!SR) {
+
+        const speech =
+          document.getElementById(
+            "speech"
+          );
+
+        if (speech) {
+          speech.innerHTML =
+            "<b>JARVIS:</b> ⚠️ " +
+            "Bu tarayıcı ses tanımayı desteklemiyor.";
+        }
+
+        return;
+      }
+
+      const recognition =
+        new SR();
+
+      recognition.lang =
+        "tr-TR";
+
+      recognition.continuous =
+        false;
+
+      recognition.interimResults =
+        false;
+
+      // Daha fazla alternatif al.
+      recognition.maxAlternatives =
+        5;
+
+      // Tarayıcı destekliyorsa coin isimlerini
+      // bağlamsal olarak öne çıkar.
+      try {
+
+        if (
+          "SpeechRecognitionPhrase"
+          in window
+        ) {
+
+          const words = [
+            "BTC", "Bitcoin",
+            "ETH", "Ethereum",
+            "SOL", "Solana",
+            "SAND",
+            "DOGE", "Dogecoin",
+            "XRP", "Ripple",
+            "ADA", "Cardano",
+            "AVAX", "Avalanche"
+          ];
+
+          recognition.phrases =
+            words.map(word =>
+              new SpeechRecognitionPhrase(
+                word,
+                10
+              )
+            );
+        }
+
+      } catch(e) {
+        console.log(
+          "Phrase desteği yok:",
+          e
+        );
+      }
+
+      const speech =
+        document.getElementById(
+          "speech"
+        );
+
+      if (speech) {
+
+        speech.innerHTML =
+          "<b>JARVIS:</b> 🎙️ Dinliyorum...";
+      }
+
+      recognition.onresult =
+        event => {
+
+          let bestCommand = "";
+
+          // Birden fazla alternatifin tamamını
+          // kontrol ediyoruz.
+          const result =
+            event.results[
+              event.results.length - 1
+            ];
+
+          for (
+            let i = 0;
+            i < result.length;
+            i++
+          ) {
+
+            const candidate =
+              result[i]
+                .transcript
+                .trim();
+
+            if (!bestCommand)
+              bestCommand =
+                candidate;
+
+            if (
+              findJarvisCoin(
+                candidate
+              )
+            ) {
+
+              bestCommand =
+                candidate;
+
+              break;
+            }
+          }
+
+          console.log(
+            "JARVIS ALTERNATIF:",
+            bestCommand
+          );
+
+          processJarvisV4(
+            bestCommand
+          );
+        };
+
+      recognition.onerror =
+        event => {
+
+          console.error(
+            "JARVIS MIC V4:",
+            event.error
+          );
+
+          if (speech) {
+
+            speech.innerHTML =
+              "<b>JARVIS:</b> ⚠️ " +
+              event.error;
+          }
+        };
+
+      try {
+        recognition.start();
+      }
+      catch(e) {
+        console.error(e);
+      }
+    };
+  }
+
+  window.jarvisFindCoin =
+    findJarvisCoin;
+
+  console.log(
+    "JARVIS SES MOTORU V4 AKTIF"
+  );
+
+})();
+</script>
+
+
+<!-- JARVIS TEK CANLI VERİ MOTORU -->
+<!-- legacy live engine 7 removed: final controlled engine is sole writer -->
+
+
+<script id="jarvis-holo-orbit-v3-script">
+(function(){
+
+  let jarvisOrbitFrame = null;
+  let jarvisOrbitStart = performance.now();
+
+  function runJarvisHoloOrbit(now){
+
+    const core = document.querySelector('.core');
+    const bubbles = Array.from(
+      document.querySelectorAll('.core .bubble[data-bubble]')
+    );
+
+    if(!core || !bubbles.length){
+      jarvisOrbitFrame = requestAnimationFrame(runJarvisHoloOrbit);
+      return;
+    }
+
+    const width = core.clientWidth;
+    const height = core.clientHeight;
+
+    if(width < 100 || height < 100){
+      jarvisOrbitFrame = requestAnimationFrame(runJarvisHoloOrbit);
+      return;
+    }
+
+    const cx = width / 2;
+    const cy = height / 2;
+
+    const radius = Math.min(width, height) * 0.31;
+
+    const elapsed = (now - jarvisOrbitStart) / 1000;
+    const rotation = elapsed * 0.22;
+
+    bubbles.forEach((bubble, index) => {
+
+      const phase = (Math.PI * 2 / bubbles.length) * index;
+
+      const angle = phase + rotation;
+
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius * 0.72;
+
+      const depth = (Math.sin(angle) + 1) / 2;
+
+      const scale =
+        0.86 +
+        depth * 0.22 +
+        (bubble.classList.contains('selected') ? 0.18 : 0);
+
+      const opacity =
+        0.72 + depth * 0.28;
+
+      const z =
+        Math.round(depth * 100);
+
+      bubble.style.left = cx + 'px';
+      bubble.style.top = cy + 'px';
+
+      bubble.style.transform =
+        'translate(-50%,-50%) translate(' +
+        x.toFixed(2) + 'px,' +
+        y.toFixed(2) + 'px) scale(' +
+        scale.toFixed(3) + ')';
+
+      bubble.style.opacity = opacity.toFixed(2);
+      bubble.style.zIndex = String(10 + z);
+    });
+
+    jarvisOrbitFrame = requestAnimationFrame(runJarvisHoloOrbit);
+  }
+
+  function startJarvisHoloOrbit(){
+
+    if(jarvisOrbitFrame){
+      cancelAnimationFrame(jarvisOrbitFrame);
+    }
+
+    jarvisOrbitStart = performance.now();
+    jarvisOrbitFrame =
+      requestAnimationFrame(runJarvisHoloOrbit);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener(
+      'DOMContentLoaded',
+      startJarvisHoloOrbit,
+      {once:true}
+    );
+  }else{
+    startJarvisHoloOrbit();
+  }
+
+})();
+</script>
+
+
+<script id="jarvis-v10-detail-ui">
+window.jarvisV10PanelOpen = false;
+window.jarvisV10PanelSymbol = "";
+window.jarvisV10RequestId = 0;
+
+async function loadJarvisV10Detail(symbol){
+
+  const analysis = document.getElementById('analysis');
+
+  if(!analysis || !symbol){
+    return;
+  }
+
+  const requestId = ++window.jarvisV10RequestId;
+
+  window.jarvisV10PanelOpen = true;
+  window.jarvisV10PanelSymbol = String(symbol);
+
+  analysis.innerHTML = `
+    <div class="analysiscoin">
+      <strong>${String(symbol).replace('_TRY','/TRY')}</strong>
+      <span class="signal wait">V10 ANALİZ</span>
+    </div>
+    <div class="metric">
+      <span>Durum</span>
+      <strong>DERİN ANALİZ ALINIYOR...</strong>
+    </div>
+  `;
+
+  try{
+
+    const response = await fetch(
+      '/api/analysis/' +
+      encodeURIComponent(symbol) +
+      '?_=' + Date.now(),
+      {
+        method:'GET',
+        cache:'no-store',
+        headers:{
+          'Cache-Control':'no-cache',
+          'Pragma':'no-cache'
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if(requestId !== window.jarvisV10RequestId){
+      return;
+    }
+
+    if(!response.ok){
+      throw new Error(
+        data.error || ('HTTP ' + response.status)
+      );
+    }
+
+    const signal = data.signal || 'BEKLE';
+    const score = Number(data.score || 0);
+    const unifiedScore = Number(
+      data.canonicalScore ?? data.score ?? 0
+    );
+
+    const unifiedSignal =
+      data.canonicalSignal ||
+      data.signal ||
+      "BEKLE";
+
+    const confirmationPercent = Number(
+      data.confirmationPercent ??
+      data.intelligence?.confirmationPercent ??
+      0
+    );
+
+
+    const one = data.timeframes?.['1m'] || {};
+    const five = data.timeframes?.['5m'] || {};
+    const book = data.orderBook || {};
+    const whale = data.largeTrades || {};
+
+    const reasons = Array.isArray(data.reasons)
+      ? data.reasons
+      : [];
+
+    const cls =
+      signal === 'AL'
+        ? 'buy'
+        : signal === 'SAT'
+          ? 'sell'
+          : 'wait';
+
+    const fmt = n =>
+      Number(n || 0).toLocaleString(
+        'tr-TR',
+        {maximumFractionDigits:2}
+      );
+
+    analysis.innerHTML = `
+      <div class="analysiscoin">
+        <strong>
+          ${String(symbol).replace('_TRY','/TRY')}
+        </strong>
+        <span class="signal ${cls}">
+          ${signal} ${score.toFixed(1)}
+        </span>
+      </div>
+
+      <div class="metric">
+        <span>1DK</span>
+        <strong>${Number(
+          one.changePercent || 0
+        ).toFixed(2)}%</strong>
+      </div>
+
+      <div class="metric">
+        <span>5DK</span>
+        <strong>${Number(
+          five.changePercent || 0
+        ).toFixed(2)}%</strong>
+      </div>
+
+      <div class="metric">
+        <span>Emir Defteri</span>
+        <strong>${Number(
+          book.pressurePercent || 0
+        ).toFixed(1)}%</strong>
+      </div>
+
+      <div class="metric">
+        <span>Büyük Alış</span>
+        <strong>${fmt(
+          whale.largeBuyTRY
+        )} ₺</strong>
+      </div>
+
+      <div class="metric">
+        <span>Büyük Satış</span>
+        <strong>${fmt(
+          whale.largeSellTRY
+        )} ₺</strong>
+      </div>
+
+      <div class="metric">
+        <span>Net Büyük Akış</span>
+        <strong>${fmt(
+          whale.netFlowTRY
+        )} ₺</strong>
+      </div>
+
+      <div style="margin-top:10px;padding:10px;border:1px solid rgba(0,255,255,.22);border-radius:12px;background:rgba(0,255,255,.035);"><div style="font-size:10px;letter-spacing:1px;color:#00eaff;margin-bottom:5px;">🧠 JARVIS YORUMU</div><div style="font-size:9px;color:#6ff;margin-bottom:5px;opacity:.8;">◈ TEK KARAR MOTORU • UNIFIED RADAR + V10</div><div style="font-size:12px;line-height:1.5;color:#fff;">${data.jarvisComment || "Yorum verisi yok"}</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;"><div class="metric"><span>Yön</span><strong>${data.intelligence?.direction || "-"}</strong></div><div class="metric"><span>Risk</span><strong>${data.intelligence?.riskLevel || "-"}</strong></div><div class="metric"><span>Para Akışı</span><strong>${data.intelligence?.moneyFlow || "-"}</strong></div><div class="metric"><span>Teyit</span><strong>${data.intelligence?.confirmationText || "-"}${data.confirmationPercent != null ? " • " + data.confirmationPercent + "%" : ""}</strong></div></div><div style="
+        margin-top:10px;
+        font-size:11px;
+        line-height:1.5;
+        color:rgba(255,255,255,.75);
+      ">
+        <b>JARVIS NEDEN:</b><br>
+        ${
+          reasons.length
+            ? reasons.map(x => '• ' + x).join('<br>')
+            : '• Veri yetersiz'
+        }
+      </div>
+    `;
+
+  }catch(error){
+
+    if(requestId !== window.jarvisV10RequestId){
+      return;
+    }
+
+    analysis.innerHTML = `
+      <div class="analysiscoin">
+        <strong>
+          ${String(symbol).replace('_TRY','/TRY')}
+        </strong>
+        <span class="signal wait">BEKLE</span>
+      </div>
+
+      <div class="metric">
+        <span>V10</span>
+        <strong>Detay verisi alınamadı</strong>
+      </div>
+
+      <div style="
+        margin-top:8px;
+        font-size:11px;
+        opacity:.7;
+      ">
+        ${String(error.message || error)}
+      </div>
+    `;
+  }
+}
+
+window.jarvisV10Detail = loadJarvisV10Detail;
+
+/*
+ * V10 çağrısı TEK YERDEN yapılacak.
+ * Eski window wrapper kaldırıldı.
+ */
+</script>
+
+
+<style id="JARVIS_FINAL_TRADING_AND_RADAR_FIX">
+/* Final safe integration: keep the existing radar/core/voice JS intact. */
+.trade{min-height:360px !important;max-height:none !important;overflow:auto !important}
+.summary{min-height:360px !important;max-height:none !important;overflow:auto !important}
+.trade .tabs{position:sticky;top:0;z-index:20;background:rgba(1,8,16,.96);backdrop-filter:blur(8px)}
+.trade .tab{cursor:pointer;user-select:none}
+.trade .field input,.trade .field select{font-size:12px}
+.trade .modebar{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 12px}
+.trade .modebtn{padding:8px;border:1px solid #14536a;border-radius:6px;background:#041522;color:#7dd7e8;font-size:10px;font-weight:800;text-align:center;cursor:pointer}
+.trade .modebtn.active{border-color:#00eaff;background:rgba(0,220,255,.12);color:#eaffff;box-shadow:0 0 14px rgba(0,220,255,.15)}
+.trade .orderhint{margin:7px 12px;padding:7px;border:1px solid rgba(0,220,255,.18);border-radius:6px;color:#80b6c2;font-size:9px;line-height:1.4}
+.trade .send{margin-top:4px}
+.realwarn.live-on{border-color:#a12d3c;color:#fff;background:#300a12}
+.realwarn.live-off{border-color:#1b6375;color:#82d7e6;background:#041521}
+.api-panel{margin-top:8px;padding:10px;border:1px solid rgba(0,234,255,.22);border-radius:8px;background:rgba(0,25,38,.75)}
+.api-panel input{width:100%;margin-top:5px;background:#020b14;border:1px solid #14536a;color:#d9fbff;padding:8px;border-radius:5px;font-size:10px}
+.api-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}
+.api-actions button{background:#062a3d;color:#77d9ec;border:1px solid #115a70;padding:8px;border-radius:5px;font-size:9px;cursor:pointer}
+.account-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:7px 0}
+.account-card{padding:8px;border:1px solid rgba(0,220,255,.15);border-radius:6px;background:rgba(0,20,30,.55)}
+.account-card span{display:block;color:#6e9eab;font-size:9px}.account-card b{display:block;color:#e5fdff;margin-top:3px;font-size:11px}
+.order-list{margin-top:8px;max-height:180px;overflow:auto}.order-item{padding:7px 0;border-bottom:1px solid rgba(44,132,151,.13);font-size:9px}.order-item b{color:#dffcff}.order-item span{color:#73b5c2}
+#jarvis-api-status{font-size:9px;color:#72cddd;margin-top:6px}
+@media(max-width:820px){.trade,.summary{min-height:0 !important}.api-panel{margin-bottom:10px}}
+</style>
+<script id="JARVIS_FINAL_TRADING_ENGINE">
+(function(){
+  const $=id=>document.getElementById(id);
+  let liveTrading=false; window.jarvisLiveTrading=false;
+  let orderType='MARKET';
+
+  function money(v){const n=Number(v);return Number.isFinite(n)?n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TRY':'-';}
+  function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+
+  function ensureTradingUI(){
+    const trade=document.querySelector('.trade');
+    const summary=document.querySelector('.summary');
+    if(!trade||!summary)return;
+    if(!$('orderModeBar')){
+      const bar=document.createElement('div');bar.id='orderModeBar';bar.className='modebar';
+      bar.innerHTML='<div class="modebtn active" data-type="MARKET">MARKET</div><div class="modebtn" data-type="LIMIT">LIMIT</div>';
+      trade.querySelector('.form').before(bar);
+      bar.querySelectorAll('.modebtn').forEach(b=>b.onclick=()=>{
+        orderType=b.dataset.type;bar.querySelectorAll('.modebtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+        const p=$('limitPrice'); if(p)p.disabled=orderType!=='LIMIT';
+      });
+    }
+    if(!$('orderHint')){
+      const h=document.createElement('div');h.id='orderHint';h.className='orderhint';h.textContent='MARKET: miktar ile anında piyasa emri. LIMIT: fiyat alanı kullanılır.';trade.querySelector('.form').before(h);
+    }
+    if(!$('apiPanel')){
+      const p=document.createElement('div');p.id='apiPanel';p.className='api-panel';
+      p.innerHTML='<div class="phead" style="padding:0 0 6px">BINANCE TR API</div><input id="apiKeyInput" placeholder="API Key" autocomplete="off"><input id="apiSecretInput" placeholder="API Secret" type="password" autocomplete="off"><div class="api-actions"><button id="saveApi">API KAYDET</button><button id="testApi">BAĞLANTIYI TEST ET</button></div><div id="jarvis-api-status">API ayarı bekleniyor.</div>';
+      summary.appendChild(p);
+    }
+    if(!$('liveSwitch')){
+      const sw=summary.querySelector('.switch');
+      if(sw){sw.innerHTML='<span id="liveLabel">GERÇEK İŞLEM MODU: KAPALI</span><button id="liveSwitch" type="button" style="border:1px solid #14536a;background:#062a3d;color:#8bdbea;border-radius:18px;padding:5px 10px;font-size:9px">KAPALI</button>';}
+    }
+    if(!$('accountGrid')){
+      const g=document.createElement('div');g.id='accountGrid';g.className='account-grid';g.innerHTML='<div class="account-card"><span>TRY Bakiye</span><b id="tryBalance">-</b></div><div class="account-card"><span>Portföy</span><b id="assetBalance">-</b></div>';
+      summary.insertBefore(g,summary.querySelector('.api-panel'));
+    }
+    if(!$('ordersPanel')){
+      const o=document.createElement('div');o.id='ordersPanel';o.className='order-list';o.innerHTML='<div style="color:#64dff3;font-weight:800;font-size:10px;margin-bottom:5px">AÇIK / SON EMİRLER</div><div id="orderListText" style="color:#6798a6">API bağlantısı sonrası gösterilir.</div>';
+      summary.insertBefore(o,summary.querySelector('.api-panel'));
+    }
+  }
+
+  async function status(){
+    try{const r=await fetch('/api/status?_='+Date.now(),{cache:'no-store'});const x=await r.json();liveTrading=!!x.real_trading;updateStatus(x);}catch(e){}
+  }
+  function updateStatus(x){
+    const s=$('jarvis-api-status'); if(s)s.textContent=x.configured?(x.real_trading?'● API bağlı • GERÇEK İŞLEM AÇIK':'● API bağlı • gerçek işlem kapalı'):'○ API anahtarı girilmedi';
+    const b=$('liveSwitch'),l=$('liveLabel'),w=document.querySelector('.realwarn');
+    if(b){b.textContent=x.real_trading?'AÇIK':'KAPALI';b.style.background=x.real_trading?'#8b1020':'#062a3d';b.style.color='#fff'}
+    if(l)l.textContent='GERÇEK İŞLEM MODU: '+(x.real_trading?'AÇIK':'KAPALI');
+    if(w){w.className='realwarn '+(x.real_trading?'live-on':'live-off');w.textContent=x.real_trading?'⚠ GERÇEK PARA: AL/SAT EMİRLERİ AKTİF.':'● Gerçek emirler kapalı. API girilse bile otomatik emir gönderilmez.';}
+  }
+  async function saveApi(){
+    const key=$('apiKeyInput')?.value.trim(), secret=$('apiSecretInput')?.value.trim();
+    if(!key||!secret){alert('API Key ve API Secret gerekli.');return}
+    const enable=confirm('API kaydedilecek. Gerçek işlem modu hemen açılsın mı?\n\nİptal = API kaydet, gerçek işlem kapalı kalsın.');
+    const r=await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({apiKey:key,apiSecret:secret,enableReal:enable})});
+    const x=await r.json();
+    if(!r.ok){alert(x.error||'API ayarı kaydedilemedi');return}
+    $('apiKeyInput').value='';$('apiSecretInput').value='';updateStatus(x);await loadAccount();alert(enable?'API kaydedildi ve gerçek işlem modu açıldı.':'API kaydedildi. Gerçek işlem modu kapalı.');
+  }
+  async function toggleLive(){
+    const next=!liveTrading;
+    if(next&&!confirm('GERÇEK İŞLEM MODUNU açıyorsun. Bundan sonra AL/SAT emri gerçek para kullanabilir. Devam edilsin mi?'))return;
+    const r=await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enableReal:next})});
+    const x=await r.json();if(!r.ok){alert(x.error||'Mod değiştirilemedi');return}liveTrading=!!x.real_trading;updateStatus(x);
+  }
+  async function loadAccount(){
+    try{const r=await fetch('/api/balance?_='+Date.now(),{cache:'no-store'});const x=await r.json();if(!r.ok)return;
+      if(x?.analysis_mode){$('tryBalance').textContent='API YOK';$('assetBalance').textContent='Analiz modu • gerçek bakiye yok';return}
+      let assets=Array.isArray(x?.data)?x.data:(Array.isArray(x?.balances)?x.balances:(Array.isArray(x)?x:[]));
+      const tryAsset=assets.find(a=>String(a.asset||a.coin||'').toUpperCase()==='TRY');
+      $('tryBalance').textContent=money(tryAsset?.free??tryAsset?.available??tryAsset?.balance??0);
+      const nonTry=assets.filter(a=>String(a.asset||a.coin||'').toUpperCase()!=='TRY' && Number(a.free??a.available??a.balance??0)>0).slice(0,4);
+      $('assetBalance').textContent=nonTry.length?nonTry.map(a=>String(a.asset||a.coin)+': '+Number(a.free??a.available??a.balance??0).toFixed(4)).join(' • '):'-';
+    }catch(e){}
+  }
+  async function loadOrders(){
+    const symbol=($('symbol')?.value||'BTC_TRY').toUpperCase().trim();
+    try{const r=await fetch('/api/orders?symbol='+encodeURIComponent(symbol)+'&type=-1&limit=20&_='+Date.now(),{cache:'no-store'});const x=await r.json();if(!r.ok){$('orderListText').textContent='Emirler alınamadı.';return}
+      if(x?.analysis_mode){$('orderListText').textContent='API anahtarı yok — gerçek açık emirler bu modda gösterilmez.';return}
+      const arr=Array.isArray(x?.data)?x.data:(Array.isArray(x)?x:[]);
+      $('orderListText').innerHTML=arr.length?arr.slice(0,10).map(o=>'<div class="order-item"><b>'+esc(o.side===0?'AL':o.side===1?'SAT':o.side||'-')+' '+esc(o.symbol||symbol)+'</b><br><span>Fiyat: '+esc(o.price??'-')+' • Miktar: '+esc(o.origQty??o.quantity??'-')+' • Durum: '+esc(o.status??'-')+'</span></div>').join(''):'Emir bulunamadı.';
+    }catch(e){$('orderListText').textContent='Emirler alınamadı.'}
+  }
+
+  // Existing button is replaced only for order execution; radar/analysis engines remain untouched.
+  function bind(){
+    ensureTradingUI();
+    $('saveApi')?.addEventListener('click',saveApi);
+    $('testApi')?.addEventListener('click',async()=>{await status();await loadAccount();await loadOrders();});
+    $('liveSwitch')?.addEventListener('click',toggleLive);
+    const send=$('send');
+    if(send)send.onclick=async()=>{
+      if(!liveTrading){alert('Gerçek işlem modu kapalı. API ayarlarından açabilirsin.');return}
+      const symbol=($('symbol')?.value||'').toUpperCase().trim();const qty=$('qty')?.value;const price=$('limitPrice')?.value;
+      if(!symbol||!qty){alert('Coin ve miktar gerekli.');return}
+      if(orderType==='LIMIT'&&!price){alert('LIMIT emir için fiyat gerekli.');return}
+      if(!confirm('GERÇEK EMİR GÖNDERİLECEK.\n\n'+(side==='BUY'?'AL':'SAT')+' '+symbol+'\nMiktar: '+qty+(orderType==='LIMIT'?'\nFiyat: '+price:'')+'\n\nDevam edilsin mi?'))return;
+      send.disabled=true;send.textContent='EMİR GÖNDERİLİYOR...';
+      try{const body={symbol,side,type:orderType,quantity:qty,confirm:'EXECUTE_REAL_ORDER'};if(orderType==='LIMIT')body.price=price;const r=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const x=await r.json();alert(r.ok?'Emir gönderildi.\n\n'+JSON.stringify(x,null,2):'Emir gönderilemedi.\n\n'+JSON.stringify(x,null,2));await loadAccount();await loadOrders();}catch(e){alert('Sunucuya bağlanılamadı.')}finally{send.disabled=false;send.textContent=side==='BUY'?'ALIM EMRİ GÖNDER':'SATIŞ EMRİ GÖNDER'}
+    };
+    status();
+    setInterval(()=>{status();if(liveTrading){loadAccount();loadOrders();}},10000);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+})();
+</script>
+
+
+<!-- JARVIS_TABLET_FINAL_FIX_V1 -->
+<style id="jarvis-tablet-final-css">
+/* One responsive command deck: preserve core/bubbles, prioritize trading on tablets. */
+.topbar{min-height:58px}
+.nav span{cursor:pointer;transition:.2s}.nav span:hover{color:#b9fbff;text-shadow:0 0 12px #00eaff}
+.bottom{grid-template-columns:minmax(150px,1fr) minmax(360px,1.55fr) minmax(330px,1.25fr) minmax(220px,.9fr)}
+.bottomnav{display:grid;grid-template-columns:1fr;align-content:start;gap:0}
+.navbtn{cursor:pointer;user-select:none;transition:.2s}.navbtn:hover,.navbtn.active{color:#bfffff;text-shadow:0 0 12px #00eaff;background:rgba(0,170,220,.09)}
+.navbtn.disabled{opacity:.45}
+.chart{min-height:290px}.chart canvas{display:block;width:100%;height:230px}
+.trade{min-width:0}.trade .tabs{display:flex;gap:7px;flex-wrap:wrap}.trade .tab{cursor:pointer;user-select:none}.trade .tab.on{box-shadow:0 0 14px rgba(0,234,255,.22)}
+.trade .form{display:grid;grid-template-columns:1fr 1fr;gap:8px}.trade .form .field:last-of-type,.trade .form .send{grid-column:1/-1}
+.trade .send{min-height:48px;font-size:12px;font-weight:900;letter-spacing:.5px}
+#orderModeBar{display:flex;gap:7px;margin:7px 0}.modebtn{flex:1;padding:10px;text-align:center;border:1px solid #155a70;border-radius:7px;cursor:pointer;font-size:11px;font-weight:900}.modebtn.active{border-color:#00eaff;background:rgba(0,190,255,.12);box-shadow:0 0 15px rgba(0,234,255,.18)}
+#jarvis-live-market{margin-top:10px;padding:10px}.jarvis-live-title{display:flex;justify-content:space-between;align-items:center;gap:10px}.jarvis-live-title b{font-size:12px;color:#79e9f7}.jarvis-live-title span{font-size:9px;color:#65c8d9}.jarvis-market-card{padding:8px;border:1px solid rgba(0,255,255,.18);border-radius:8px;background:rgba(0,20,32,.45);min-width:0}.jarvis-market-card b{font-size:11px}.jarvis-market-card .jvprice{font-size:12px;font-weight:900}.jarvis-market-card .jvmini{font-size:9px;color:#72a8b5}.jarvis-spark{width:100%;height:42px;display:block;margin-top:4px}
+.jarvis-focus{outline:1px solid #00eaff;box-shadow:0 0 30px rgba(0,234,255,.22)!important}
+.jarvis-overlay{position:fixed;inset:0;background:rgba(0,5,14,.78);backdrop-filter:blur(6px);z-index:10000;display:none;align-items:center;justify-content:center;padding:18px}.jarvis-overlay.show{display:flex}.jarvis-modal{width:min(760px,96vw);max-height:88vh;overflow:auto;border:1px solid rgba(0,234,255,.5);background:linear-gradient(145deg,#061d2d,#010912);box-shadow:0 0 50px rgba(0,180,255,.18);padding:16px;border-radius:12px}.jarvis-modal h3{margin:0 0 12px;color:#9ff6ff}.jarvis-modal .close{float:right;background:#08283a;border:1px solid #17647d;color:#baf8ff;border-radius:6px;padding:6px 10px;cursor:pointer}.jarvis-modal .modalgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.jarvis-modal .modalcard{padding:10px;border:1px solid rgba(0,200,255,.18);border-radius:8px}.jarvis-modal .modalcard span{display:block;color:#72a7b3;font-size:9px}.jarvis-modal .modalcard b{display:block;margin-top:3px;font-size:12px}
+/* Tablet: no hidden summary, no four-column squeeze. */
+@media (max-width:1100px){
+  .shell{padding:8px}.hud{grid-template-columns:220px minmax(0,1fr) 245px}.bottom{grid-template-columns:150px minmax(0,1.35fr) minmax(300px,1.1fr)}.summary{display:block}.corepanel{min-height:570px}.nav{gap:12px;font-size:9px}
+}
+@media (max-width:900px){
+  .topbar{height:auto;min-height:58px;flex-wrap:wrap;padding:8px 0}.brand{font-size:22px!important;letter-spacing:4px!important}.nav{order:3;width:100%;justify-content:space-between;overflow:auto;gap:18px}.topstatus{margin-left:auto}.hud{grid-template-columns:minmax(0,1fr)}.hud>aside:first-child{order:2}.hud>main{order:1}.hud>aside:last-child{order:3}.corepanel{min-height:510px}.bottom{grid-template-columns:1fr 1fr;align-items:stretch}.bottomnav{grid-column:1/-1;display:flex;overflow-x:auto;white-space:nowrap}.navbtn{min-width:145px;padding:11px 9px;text-align:center}.chart{grid-column:1/-1}.trade{grid-column:1/-1}.summary{grid-column:1/-1}.trade .form{grid-template-columns:1fr 1fr}
+  #jarvis-market-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media (max-width:650px){
+  .hud{grid-template-columns:1fr}.corepanel{min-height:470px}.core{width:min(390px,92vw)}.bottom{grid-template-columns:1fr}.chart,.trade,.summary{grid-column:auto}.trade .form{grid-template-columns:1fr}.trade .form .field:last-of-type,.trade .form .send{grid-column:auto}.trade .form .send{grid-column:1/-1}.nav{display:none}.topstatus{font-size:9px}.brand{font-size:20px!important}.jarvis-modal .modalgrid{grid-template-columns:1fr}.jarvis-live-title{align-items:flex-start}.jarvis-live-title span{white-space:nowrap}
+  #jarvis-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+</style>
+<!-- legacy live engine 11 removed: final controlled engine is sole writer -->
+
+<style id="JARVIS_FINAL_TABLET_CONTROLLED_CSS">
+/* Final layout authority: one responsive layer wins over the older experimental layers. */
+@media (min-width:850px) and (max-width:1450px){
+  .bottom{grid-template-columns:minmax(280px,1fr) minmax(360px,1.25fr) minmax(280px,1fr)!important;gap:9px!important;align-items:stretch!important}
+  .bottomnav{grid-column:1/-1!important;display:flex!important;overflow-x:auto!important;white-space:nowrap!important}
+  .navbtn{min-width:150px!important;flex:1 1 0!important;text-align:center!important}
+  .chart,.trade,.summary{grid-column:auto!important;min-width:0!important;max-height:none!important}
+  .trade{min-height:390px!important;overflow:auto!important}
+  .summary{min-height:390px!important;overflow:auto!important}
+  .chart{min-height:390px!important}
+}
+@media (max-width:849px){
+  .bottom{grid-template-columns:1fr!important;gap:8px!important}
+  .bottomnav{grid-column:auto!important;display:flex!important;overflow-x:auto!important;white-space:nowrap!important}
+  .navbtn{min-width:145px!important;flex:0 0 auto!important}
+  .chart,.trade,.summary{grid-column:auto!important;max-height:none!important}
+  .trade{order:-1!important;min-height:370px!important}
+  .chart{min-height:300px!important}
+  .summary{min-height:320px!important}
+}
+@media (min-width:850px){
+  .trade{position:relative;z-index:30!important}
+  .trade .send{min-height:48px!important;font-size:12px!important}
+  .trade .form{gap:8px!important}
+}
+#jarvis-live-market .jarvis-market-card{overflow:hidden}
+#jarvis-live-market canvas{display:block;width:100%;height:44px;margin-top:5px}
+.jarvis-live-title{position:relative;z-index:2}
+.jarvis-nav-active{color:#bfffff!important;text-shadow:0 0 12px #00eaff!important;background:rgba(0,170,220,.09)!important}
+</style>
+<script id="JARVIS_FINAL_CONTROLLED_ENGINE">
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const histories={};
+  const symbolsFromInput=()=>String($('symbol')?.value||'BTC_TRY').trim().toUpperCase();
+  const money=v=>{const n=Number(v);return Number.isFinite(n)?n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TRY':'--'};
+  const priceFmt=v=>{const n=Number(v);return Number.isFinite(n)?n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:8}):'--'};
+  function drawMini(canvas,arr){
+    if(!canvas||arr.length<2)return;
+    const dpr=window.devicePixelRatio||1,w=Math.max(120,canvas.clientWidth),h=Math.max(40,canvas.clientHeight);
+    canvas.width=w*dpr;canvas.height=h*dpr;const c=canvas.getContext('2d');c.scale(dpr,dpr);c.clearRect(0,0,w,h);
+    const vals=arr.slice(-30),min=Math.min(...vals),max=Math.max(...vals),range=max-min||Math.max(1,max*.0001);
+    c.beginPath(); vals.forEach((v,i)=>{const x=i*(w-4)/(vals.length-1)+2,y=h-4-((v-min)/range)*(h-8);i?c.lineTo(x,y):c.moveTo(x,y)});c.strokeStyle='#43e8ff';c.lineWidth=1.7;c.stroke();
+  }
+  function setMain(symbol,item){
+    if(!item)return;
+    const price=Number(item.lastPrice); if(!Number.isFinite(price))return;
+    const pct=Number(item.priceChangePercent);
+    const pretty=priceFmt(price), label=symbol.replace(/_TRY$/,'/TRY');
+    if($('symbol') && $('symbol').value!==symbol && document.activeElement!==$('symbol')) $('symbol').value=symbol;
+    if($('chartSymbol'))$('chartSymbol').textContent=label;
+    if($('price'))$('price').textContent=pretty;
+    const p=document.querySelector('.charttop .pct');if(p){p.textContent=Number.isFinite(pct)?(pct>=0?'+':'')+pct.toFixed(2)+'%':'--';p.className='pct '+(pct>=0?'up':'down')}
+    const lp=$('limitPrice');if(lp && document.activeElement!==lp){lp.value=String(price);lp.dataset.jarvisLiveSymbol=symbol}
+    const q=$('qty'),quote=$('quote');if(q&&quote){const qty=Number(q.value);quote.value=Number.isFinite(qty)?(price*qty).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TRY':'--'}
+    histories[symbol]=histories[symbol]||[];histories[symbol].push(price);if(histories[symbol].length>60)histories[symbol].shift();
+    const chart=$('chart');if(chart)drawMini(chart,histories[symbol]);
+  }
+  async function fetchMarkets(list){
+    const clean=[...new Set(list.filter(Boolean))];if(!clean.length)return null;
+    const r=await fetch('/api/markets?symbols='+encodeURIComponent(clean.join(','))+'&_='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('markets '+r.status);return await r.json();
+  }
+  function ensureLivePanel(){
+    if($('jarvis-live-market'))return;
+    const panel=document.createElement('section');panel.id='jarvis-live-market';panel.className='panel';
+    panel.innerHTML='<div class="jarvis-live-title"><b>🛰️ JARVIS CANLI PİYASA RADARI</b><span id="jarvis-live-status">BAĞLANIYOR...</span></div><div id="jarvis-market-grid" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px"></div>';
+    const chart=document.querySelector('.panel.chart'); if(chart&&chart.parentNode)chart.parentNode.insertBefore(panel,chart); else document.querySelector('.bottom')?.prepend(panel);
+  }
+  function renderLiveCards(data){
+    const grid=$('jarvis-market-grid');if(!grid||!data)return;
+    const keys=[...new Set(['BTC_TRY','ETH_TRY','SOL_TRY','SAND_TRY','DOGE_TRY','XRP_TRY','ADA_TRY','AVAX_TRY',symbolsFromInput()])].filter(Boolean);
+    const existing=new Map([...grid.querySelectorAll('.jarvis-market-card')].map(card=>[card.dataset.symbol,card]));
+    keys.forEach(sym=>{
+      const x=data[sym];if(!x||x.error)return;
+      let card=existing.get(sym);
+      if(!card){
+        card=document.createElement('div');card.className='jarvis-market-card';card.dataset.symbol=sym;
+        card.innerHTML='<b></b><div class="jvprice"></div><div class="jvmini"></div><canvas></canvas>';
+        grid.appendChild(card);
+      }
+      const ch=Number(x.priceChangePercent);
+      const name=card.querySelector('b'),price=card.querySelector('.jvprice'),mini=card.querySelector('.jvmini');
+      if(name)name.textContent=sym.replace('_TRY','/TRY');
+      if(price)price.textContent=priceFmt(x.lastPrice)+' ₺';
+      if(mini){mini.textContent=Number.isFinite(ch)?(ch>=0?'+':'')+ch.toFixed(2)+'%':'--';mini.className='jvmini '+(ch>=0?'up':'down');}
+      const last=Number(x.lastPrice);
+      if(Number.isFinite(last)){
+        histories[sym]=histories[sym]||[];const h=histories[sym];
+        if(h.length===0||h[h.length-1]!==last)h.push(last);
+        if(h.length>40)h.splice(0,h.length-40);
+        drawMini(card.querySelector('canvas'),h);
+      }
+      existing.delete(sym);
+    });
+    existing.forEach(card=>card.remove());
+  }
+  let liveBusy=false;
+  async function controlledLive(){
+    if(liveBusy)return;liveBusy=true;
+    try{
+      const selected=symbolsFromInput();
+      const radar=[...document.querySelectorAll('#radar [data-symbol]')].map(x=>x.dataset.symbol).filter(Boolean);
+      const list=[selected,...radar,'BTC_TRY','ETH_TRY','SOL_TRY','SAND_TRY','DOGE_TRY','XRP_TRY','ADA_TRY','AVAX_TRY'];
+      const data=await fetchMarkets(list);const item=data?.[selected];
+      if(item)setMain(selected,item);
+      renderLiveCards(data);
+      if(typeof updateLegacySections === 'function') updateLegacySections(data);
+      document.querySelectorAll('#radar [data-symbol]').forEach(el=>{ if(!el._jvBound){ el._jvBound=true; el.onclick=()=>{ const sym=el.dataset.symbol; if($('symbol')) $('symbol').value=sym; controlledLive(); document.querySelector('.trade')?.scrollIntoView({behavior:'smooth',block:'center'}); }; } });
+      const status=$('jarvis-live-status');if(status)status.textContent='● CANLI • '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      // If the generated live panel exists, give it a real mini-chart per symbol.
+      document.querySelectorAll('#jarvis-market-grid .jarvis-market-card').forEach(card=>{
+        const sym=card.dataset.symbol;if(!sym||!data?.[sym])return;const x=data[sym];
+      });
+    }catch(e){const st=$('jarvis-live-status');if(st)st.textContent='● VERİ BEKLENİYOR';console.warn('JARVIS controlled live',e)}
+    finally{liveBusy=false}
+  }
+  async function controlledAccount(){
+    try{
+      const sr=await fetch('/api/status?_='+Date.now(),{cache:'no-store'});const st=await sr.json();
+      if(!st.configured){['summaryBalance','summaryAvailable','summaryPortfolio','summaryPnL'].forEach(id=>{if($(id))$(id).textContent='API YOK'}) ;return}
+      const r=await fetch('/api/balance?_='+Date.now(),{cache:'no-store'});if(!r.ok)return;const x=await r.json();const a=Array.isArray(x?.data)?x.data:(Array.isArray(x?.balances)?x.balances:[]);const t=a.find(v=>String(v.asset||v.coin||'').toUpperCase()==='TRY');const bal=Number(t?.free??t?.available??t?.balance);if($('summaryBalance'))$('summaryBalance').textContent=money(bal);if($('summaryAvailable'))$('summaryAvailable').textContent=money(bal);if($('summaryPortfolio'))$('summaryPortfolio').textContent='API BAKİYESİ';if($('summaryPnL'))$('summaryPnL').textContent='--';
+    }catch(e){}
+  }
+  function bindNav(){
+    const nav=[...document.querySelectorAll('.bottomnav .navbtn')];
+    nav.forEach((b,i)=>{b.onclick=async()=>{nav.forEach(x=>x.classList.remove('jarvis-nav-active'));b.classList.add('jarvis-nav-active');const text=b.textContent||'';if(text.includes('AÇIK'))window.showOrders?.();else if(text.includes('PORTFÖY'))window.showPortfolio?.();else if(text.includes('İŞLEM GEÇMİŞİ'))window.showHistory?.();else if(text.includes('AYARLAR'))window.showSettings?.();else if(text.includes('İŞLEM PANELİ'))$('symbol')?.scrollIntoView({behavior:'smooth',block:'center'});else document.querySelector('.chart')?.scrollIntoView({behavior:'smooth',block:'center'});}});
+    const apiBtns=document.querySelectorAll('.summary .api button');if(apiBtns[0])apiBtns[0].onclick=()=>window.showSettings?.();if(apiBtns[1])apiBtns[1].onclick=()=>window.showHistory?.();
+  }
+  function bindSymbol(){const el=$('symbol');if(!el)return;el.addEventListener('change',controlledLive);el.addEventListener('input',()=>{clearTimeout(el._jvT);el._jvT=setTimeout(controlledLive,350)});const q=$('qty');q?.addEventListener('input',()=>{const p=Number($('limitPrice')?.value),qty=Number(q.value);if($('quote'))$('quote').value=Number.isFinite(p*qty)?(p*qty).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TRY':'--'})}
+  function fixHeader(){const clock=$('clock');const tick=()=>{if(clock)clock.textContent=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})};tick();setInterval(tick,1000);document.querySelectorAll('.topbar .nav span').forEach((b,i)=>b.onclick=()=>{if(i===0)document.querySelector('.hud')?.scrollIntoView({behavior:'smooth'});else if(i===1)document.querySelector('.trade')?.scrollIntoView({behavior:'smooth',block:'center'});else document.querySelector('.voice')?.scrollIntoView({behavior:'smooth',block:'center'})});}
+  function boot(){ensureLivePanel();bindNav();bindSymbol();fixHeader();controlledLive();controlledAccount();setInterval(controlledLive,1000);setInterval(controlledAccount,10000)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
+
+
+<!-- JARVIS FINAL FUNCTIONAL NAV + PAPER CENTER -->
+<script id="JARVIS_FINAL_NAV_PAPER_ENGINE">
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const money=v=>{const n=Number(v);return Number.isFinite(n)?n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TRY':'--'};
+  const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  function ensureModal(){
+    if($('jarvisModal')) return;
+    const o=document.createElement('div'); o.id='jarvisModal'; o.className='jarvis-overlay';
+    o.innerHTML='<div class="jarvis-modal"><button class="close" id="jarvisModalClose">KAPAT</button><h3 id="jarvisModalTitle">JARVIS</h3><div id="jarvisModalBody"></div></div>';
+    document.body.appendChild(o); $('jarvisModalClose').onclick=()=>o.classList.remove('show'); o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')});
+  }
+  function openModal(title,html){ensureModal();$('jarvisModalTitle').textContent=title;$('jarvisModalBody').innerHTML=html;$('jarvisModal').classList.add('show');}
+  async function paper(){
+    try{const r=await fetch('/api/paper/account?_='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;return await r.json()}catch(e){return null}
+  }
+  window.showPortfolio=async function(){
+    const x=await paper(); const a=x?.account;
+    if(!a){openModal('PORTFÖY','<div class="modalcard">Paper Trading verisi alınamadı.</div>');return}
+    const positions=(x.positions||[]).map(q=>'<div class="modalcard"><b>'+esc(q.symbol||'-')+'</b><span>Miktar: '+esc(q.quantity??q.qty??'-')+' • Giriş: '+esc(q.entryPrice??'-')+'</span></div>').join('');
+    const body='<div class="modalgrid">'+
+      '<div class="modalcard"><span>Nakit</span><b>'+money(a.cashTRY)+'</b></div>'+
+      '<div class="modalcard"><span>Toplam Değer</span><b>'+money(a.equityTRY)+'</b></div>'+
+      '<div class="modalcard"><span>Gerçekleşen K/Z</span><b>'+money(a.realizedPnLTRY)+'</b></div>'+
+      '<div class="modalcard"><span>Gerçekleşmemiş K/Z</span><b>'+money(a.unrealizedPnLTRY)+'</b></div>'+
+      '<div class="modalcard"><span>İşlem Sayısı</span><b>'+esc(a.tradeCount)+'</b></div>'+
+      '<div class="modalcard"><span>Kazanma</span><b>'+esc(a.winCount)+'</b></div></div>'+
+      '<h3>Açık Pozisyonlar</h3>'+(positions||'<div class="modalcard">Açık paper pozisyon yok.</div>');
+    openModal('PAPER PORTFÖY',body);
+  };
+  window.showHistory=async function(){
+    const x=await paper(); const t=x?.trades||[];
+    openModal('İŞLEM GEÇMİŞİ',t.length?t.slice().reverse().map(q=>'<div class="order-item"><b>'+esc(q.side||q.action||'-')+' '+esc(q.symbol||'-')+'</b><br><span>Fiyat: '+esc(q.price??'-')+' • Miktar: '+esc(q.quantity??q.qty??'-')+' • K/Z: '+esc(q.pnlTRY??q.realizedPnLTRY??'-')+'</span></div>').join(''):'<div class="modalcard">Henüz paper işlem geçmişi yok.</div>');
+  };
+  window.showOrders=async function(){
+    const symbol=String($('symbol')?.value||'').trim().toUpperCase();
+    if(!symbol){openModal('AÇIK EMİRLER','<div class="modalcard">Önce bir coin seç.</div>');return}
+    try{
+      const r=await fetch('/api/orders?symbol='+encodeURIComponent(symbol)+'&type=-1&limit=20&_='+Date.now(),{cache:'no-store'});
+      const x=await r.json();
+      if(!r.ok) throw new Error(x?.error||'Emirler alınamadı.');
+      if(x?.analysis_mode){openModal('AÇIK EMİRLER','<div class="modalcard">API anahtarı yok. Analiz modunda gerçek açık emirler gösterilmez.</div>');return}
+      const arr=Array.isArray(x?.data)?x.data:(Array.isArray(x)?x:[]);
+      const html=arr.length?arr.map(q=>{
+        const oid=q.orderId??q.id??''; const cid=q.clientId??q.clientOrderId??'';
+        const cancel=(oid!==''||cid!=='')?'<button type="button" class="jarvis-cancel-order" data-order-id="'+esc(oid)+'" data-client-id="'+esc(cid)+'">İPTAL</button>':'';
+        return '<div class="order-item"><b>'+esc(q.side??'-')+' '+esc(q.symbol??symbol)+'</b><br><span>Fiyat: '+esc(q.price??'-')+' • Miktar: '+esc(q.origQty??q.quantity??'-')+' • Durum: '+esc(q.status??'-')+'</span>'+cancel+'</div>';
+      }).join(''):'<div class="modalcard">Emir bulunamadı.</div>';
+      openModal('AÇIK / SON EMİRLER',html);
+      document.querySelectorAll('#jarvisModal .jarvis-cancel-order').forEach(btn=>{btn.onclick=()=>window.cancelJarvisOrder(btn.dataset.orderId,btn.dataset.clientId);});
+    }catch(e){openModal('AÇIK EMİRLER','<div class="modalcard">'+esc(e.message||'Emirler alınamadı.')+'</div>')}
+  };
+  window.showSettings=async function(){
+    let st={configured:false,real_trading:false};try{const r=await fetch('/api/status?_='+Date.now(),{cache:'no-store'});st=await r.json()}catch(e){}
+    openModal('AYARLAR','<div class="modalcard"><span>API Durumu</span><b>'+(st.configured?'BAĞLI':'BAĞLI DEĞİL')+'</b><span>Gerçek işlem</span><b>'+(st.real_trading?'AÇIK':'KAPALI')+'</b></div><div class="modalcard"><b>Güvenlik</b><span>Gerçek işlem varsayılan olarak kapalıdır. API bilgileri bu ekranda tekrar gösterilmez.</span></div>');
+  };
+  window.addEventListener('DOMContentLoaded',()=>{ensureModal(); document.querySelectorAll('.bottomnav .navbtn').forEach(b=>b.setAttribute('role','button'));});
+})();
+</script>
+
+<script id="JARVIS_FINAL_HOLO_ENGINE">
+(() => {
+  const speechBox = document.g
+
+
+  /* ---------- PARTICLE FIELD ---------- */
+
+  const canvas = document.createElement("canvas");
+  canvas.id = "jarvisParticleField";
+
+  Object.assign(canvas.style,{
+    position:"fixed",
+    inset:"0",
+    width:"100%",
+    height:"100%",
+    pointerEvents:"none",
+    zIndex:"-1",
+    opacity:"0.55"
+  });
+
+  document.body.prepend(canvas);
+
+  const ctx = canvas.getContext("2d");
+  let particles = [];
+
+  function resize(){
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    particles = Array.from(
+      {length:Math.min(95,Math.floor(innerWidth/12))},
+      () => ({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        r:Math.random()*1.7+.3,
+        vx:(Math.random()-.5)*.18,
+        vy:(Math.random()-.5)*.18,
+        a:Math.random()*.7+.15
+      })
+    );
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    for(const p of particles){
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if(p.x<0)p.x=canvas.width;
+      if(p.x>canvas.width)p.x=0;
+      if(p.y<0)p.y=canvas.height;
+      if(p.y>canvas.height)p.y=0;
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,234,255,${p.a})`;
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  addEventListener("resize",resize);
+  draw();
+
+
+  /* ---------- DYNAMIC COMMAND CENTER LABEL ---------- */
+
+  const corePanel=document.querySelector(".corepanel");
+
+  if(corePanel && !document.getElementById("jarvisCommandLabel")){
+
+    const label=document.createElement("div");
+
+    label.id="jarvisCommandLabel";
+
+    label.innerHTML=
+      "◉ JARVIS NEURAL MARKET CORE<br>" +
+      "<span>LIVE MARKET INTELLIGENCE • ANALYSIS MODE</span>";
+
+    Object.assign(label.style,{
+      position:"absolute",
+      top:"14px",
+      left:"0",
+      right:"0",
+      textAlign:"center",
+      color:"#66efff",
+      fontSize:"10px",
+      letterSpacing:"2px",
+      fontWeight:"800",
+      zIndex:"30",
+      textShadow:"0 0 12px #00eaff",
+      pointerEvents:"none"
+    });
+
+    const span=label.querySelector("span");
+
+    if(span){
+      span.style.fontSize="8px";
+      span.style.color="#438fa2";
+      span.style.letterSpacing="1px";
+    }
+
+    corePanel.appendChild(label);
+  }
+
+
+  /* ---------- LIVE CORE STATUS ---------- */
+
+  function updateCoreStatus(){
+
+    const title=document.querySelector(".coretitle");
+
+    if(!title)return;
+
+    const scan=document.querySelector(".statusbar");
+
+    if(scan && scan.textContent){
+
+      title.innerHTML=
+        "◉ NEURAL SCAN ACTIVE • "+
+        scan.textContent.replace("◉ ","");
+    }
+  }
+
+  setInterval(updateCoreStatus,1000);
+  updateCoreStatus();
+
+
+  /* ---------- SELECTED COIN GLOW ---------- */
+
+  const observer=new MutationObserver(()=>{
+
+    document
+      .querySelectorAll(".core .bubble")
+      .forEach(b=>{
+
+        if(b.classList.contains("selected")){
+
+          b.style.filter=
+            "brightness(1.45) saturate(1.35)";
+
+        }else{
+
+          b.style.filter="";
+        }
+
+      });
+
+  });
+
+  observer.observe(document.body,{
+    subtree:true,
+    attributes:true,
+    attributeFilter:["class"]
+  });
+
+
+  console.log(
+    "JARVIS FINAL HOLOGRAPHIC COMMAND CENTER AKTIF"
+  );
+
+})();
+</script>
+<script id="JARVIS_TABLET_HOLO_FINAL_ENGINE">
+(function(){
+
+  /*
+   * Görsel yerleşim motoru.
+   * Mevcut orbit motorunu değiştirmez.
+   * Sadece tablet boyutunda çekirdeğin gerçekten
+   * kullanılabilir alanın merkezinde kalmasını sağlar.
+   */
+
+  function jarvisTabletCenter(){
+
+    const core = document.querySelector('.core');
+    const panel = document.querySelector('.corepanel');
+
+    if(!core || !panel) return;
+
+    const bubbles = core.querySelectorAll(
+      '.bubble[data-bubble]'
+    );
+
+    if(!bubbles.length) return;
+
+    const w = core.clientWidth;
+    const h = core.clientHeight;
+
+    if(w < 150 || h < 150) return;
+
+    /*
+     * CSS orbit motoru zaten çalışıyorsa
+     * ona müdahale etmiyoruz.
+     * Buradaki ayar sadece bubble boyutlarının
+     * taşmasını önlüyor.
+     */
+
+    bubbles.forEach(function(bubble){
+
+      bubble.style.maxWidth = '86px';
+      bubble.style.maxHeight = '86px';
+      bubble.style.boxSizing = 'border-box';
+
+    });
+  }
+
+
+  function jarvisTabletResize(){
+
+    requestAnimationFrame(function(){
+      jarvisTabletCenter();
+    });
+
+  }
+
+
+  window.addEventListener(
+    'resize',
+    jarvisTabletResize,
+    {passive:true}
+  );
+
+  window.addEventListener(
+    'orientationchange',
+    function(){
+      setTimeout(jarvisTabletResize,350);
+    },
+    {passive:true}
+  );
+
+
+  if(document.readyState === 'loading'){
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      function(){
+        setTimeout(jarvisTabletResize,500);
+      },
+      {once:true}
+    );
+
+  }else{
+
+    setTimeout(jarvisTabletResize,500);
+
+  }
+
+
+  console.log(
+    'JARVIS TABLET HOLOGRAPHIC COMMAND CENTER FINAL AKTIF'
+  );
+
+})();
+</script>
+<script id="JARVIS_COMMAND_CENTER_ENGINE">
+
+(function(){
+
+  /*
+   * Komuta merkezi başlangıç etiketi.
+   */
+
+  function jarvisCommandInit(){
+
+    const core = document.querySelector('.core');
+
+    if(!core) return;
+
+    if(!document.getElementById(
+      'jarvis-command-live-label'
+    )){
+
+      const label =
+        document.createElement('div');
+
+      label.id =
+        'jarvis-command-live-label';
+
+      label.innerHTML =
+        '● NEURAL CORE ONLINE';
+
+      label.style.cssText = `
+        position:absolute;
+        left:50%;
+        top:calc(50% + 175px);
+        transform:translateX(-50%);
+        z-index:200;
+        color:#69f6ff;
+        font-size:9px;
+        letter-spacing:2px;
+        white-space:nowrap;
+        text-shadow:
+          0 0 8px #00eaff,
+          0 0 18px rgba(0,200,255,.8);
+        pointer-events:none;
+      `;
+
+      core.appendChild(label);
+    }
+
+  }
+
+
+  function jarvisCommandResize(){
+
+    requestAnimationFrame(
+      jarvisCommandInit
+    );
+
+  }
+
+
+  if(
+    document.readyState ===
+    'loading'
+  ){
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      function(){
+        setTimeout(
+          jarvisCommandInit,
+          600
+        );
+      },
+      {once:true}
+    );
+
+  }else{
+
+    setTimeout(
+      jarvisCommandInit,
+      600
+    );
+
+  }
+
+
+  window.addEventListener(
+    'resize',
+    jarvisCommandResize,
+    {passive:true}
+  );
+
+
+  window.addEventListener(
+    'orientationchange',
+    function(){
+
+      setTimeout(
+        jarvisCommandResize,
+        500
+      );
+
+    },
+    {passive:true}
+  );
+
+
+  console.log(
+    'JARVIS COMMAND CENTER REDESIGN AKTIF'
+  );
+
+})();
+
+</script>
+<script id="JARVIS_BUBBLE_HITAREA_FINAL_ENGINE">
+(function(){
+
+  function installJarvisBubbleHitArea(){
+
+    const core = document.querySelector('.core');
+
+    if(!core) return;
+
+    if(core.dataset.jarvisHitAreaFinal === '1'){
+      return;
+    }
+
+    core.dataset.jarvisHitAreaFinal = '1';
+
+    core.addEventListener('click', function(event){
+
+      const bubble =
+        event.target.closest('.bubble[data-bubble]');
+
+      if(!bubble) return;
+
+      const symbol =
+        bubble.getAttribute('data-bubble-symbol') || '';
+
+      if(!symbol) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const item =
+        window.jarvisMarketItems
+        ? window.jarvisMarketItems.find(
+            x => String(x.symbol || '') === String(symbol)
+          )
+        : null;
+
+      if(typeof window.jarvisBubbleSelect === 'function'){
+
+        window.jarvisBubbleSelect(
+          item || {symbol:symbol}
+        );
+
+      }
+
+    }, true);
+
+    console.log(
+      'JARVIS BUBBLE HIT AREA FINAL AKTIF'
+    );
+  }
+
+  function boot(){
+
+    installJarvisBubbleHitArea();
+
+    setTimeout(
+      installJarvisBubbleHitArea,
+      1000
+    );
+
+    setTimeout(
+      installJarvisBubbleHitArea,
+      3000
+    );
+  }
+
+  if(document.readyState === 'loading'){
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      boot,
+      {once:true}
+    );
+
+  }else{
+
+    boot();
+
+  }
+
+})();
+</script>
+<script id="JARVIS_STRUCTURAL_TOUCH_FINAL_ENGINE">
+(function(){
+
+  let hits = [];
+
+  function createHits(){
+
+    const core = document.querySelector('.core');
+
+    if(!core) return false;
+
+    if(core.querySelector('.jarvis-bubble-hit')) return true;
+
+    for(let i=0;i<7;i++){
+
+      const hit = document.createElement('div');
+
+      hit.className = 'jarvis-bubble-hit';
+      hit.dataset.hitBubble = String(i + 1);
+
+      hit.addEventListener('pointerdown', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }, true);
+
+      hit.addEventListener('pointerup', function(e){
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const bubble =
+          core.querySelector(
+            '.bubble[data-bubble="' + (i + 1) + '"]'
+          );
+
+        if(!bubble) return;
+
+        const symbol =
+          bubble.getAttribute('data-bubble-symbol') || '';
+
+        if(!symbol) return;
+
+        const item =
+          window.jarvisMarketItems
+          ? window.jarvisMarketItems.find(
+              x => String(x.symbol || '') === String(symbol)
+            )
+          : null;
+
+        if(typeof window.jarvisBubbleSelect === 'function'){
+          window.jarvisBubbleSelect(
+            item || {symbol:symbol}
+          );
+        }
+
+      }, true);
+
+      core.appendChild(hit);
+      hits.push(hit);
+    }
+
+    return true;
+  }
+
+  function updateHits(){
+
+    const core = document.querySelector('.core');
+
+    if(!core || hits.length !== 7) return;
+
+    const width = core.clientWidth;
+    const height = core.clientHeight;
+
+    if(width < 100 || height < 100) return;
+
+    const cx = width / 2;
+    const cy = height / 2;
+    const radius = Math.min(width,height) * .31;
+
+    const start =
+      window.jarvisOrbitStart ||
+      performance.now();
+
+    const elapsed =
+      (performance.now() - start) / 1000;
+
+    const rotation = elapsed * .22;
+
+    hits.forEach(function(hit,index){
+
+      const phase =
+        (Math.PI * 2 / hits.length) * index;
+
+      const angle =
+        phase + rotation;
+
+      const x =
+        Math.cos(angle) * radius;
+
+      const y =
+        Math.sin(angle) * radius * .72;
+
+      hit.style.left = cx + 'px';
+      hit.style.top = cy + 'px';
+
+      hit.style.transform =
+        'translate(-50%,-50%) translate(' +
+        x.toFixed(2) + 'px,' +
+        y.toFixed(2) + 'px)';
+
+    });
+  }
+
+  function frame(){
+
+    createHits();
+    updateHits();
+
+    requestAnimationFrame(frame);
+  }
+
+  function boot(){
+
+    if(createHits()){
+      requestAnimationFrame(frame);
+    }else{
+      setTimeout(boot,500);
+    }
+
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener(
+      'DOMContentLoaded',
+      boot,
+      {once:true}
+    );
+  }else{
+    boot();
+  }
+
+})();
+</script>
+<script id="JARVIS_BUBBLE_COORDINATE_FINAL_ENGINE">
+(function(){
+
+  let lastPointerTime = 0;
+
+  function getBubbleFromPoint(clientX, clientY){
+
+    const core = document.querySelector('.core');
+
+    if(!core) return null;
+
+    const rect = core.getBoundingClientRect();
+
+    if(rect.width < 100 || rect.height < 100) return null;
+
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const radius =
+      Math.min(rect.width, rect.height) * 0.31;
+
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+
+    /*
+      Orbit elipsinin gerçek koordinatına göre
+      en yakın balonu buluyoruz.
+    */
+
+    const start =
+      window.jarvisOrbitStart ||
+      performance.now();
+
+    const elapsed =
+      (performance.now() - start) / 1000;
+
+    const rotation = elapsed * 0.22;
+
+    let nearest = null;
+    let nearestDistance = Infinity;
+
+    for(let i = 0; i < 7; i++){
+
+      const phase =
+        (Math.PI * 2 / 7) * i;
+
+      const angle =
+        phase + rotation;
+
+      const bx =
+        cx + Math.cos(angle) * radius;
+
+      const by =
+        cy + Math.sin(angle) * radius * 0.72;
+
+      const distance =
+        Math.hypot(clientX - bx, clientY - by);
+
+      if(distance < nearestDistance){
+
+        nearestDistance = distance;
+
+        nearest = {
+          index:i + 1,
+          distance:distance
+        };
+
+      }
+    }
+
+    /*
+      Görsel balon yaklaşık 35-40 px yarıçapında.
+      Dokunma toleransını 58 px yapıyoruz.
+    */
+
+    if(!nearest || nearest.distance > 58){
+      return null;
+    }
+
+    return nearest;
+  }
+
+  function selectBubbleByIndex(index){
+
+    const bubble =
+      document.querySelector(
+        '.core .bubble[data-bubble="' + index + '"]'
+      );
+
+    if(!bubble) return;
+
+    const symbol =
+      bubble.getAttribute('data-bubble-symbol') || '';
+
+    if(!symbol) return;
+
+    let item = null;
+
+    if(Array.isArray(window.jarvisMarketItems)){
+
+      item =
+        window.jarvisMarketItems.find(
+          x =>
+            String(x.symbol || '') ===
+            String(symbol)
+        ) || null;
+
+    }
+
+    if(typeof window.jarvisBubbleSelect === 'function'){
+
+      window.jarvisBubbleSelect(
+        item || {symbol:symbol}
+      );
+
+      console.log(
+        'JARVIS COORDINATE TOUCH:',
+        symbol
+      );
+    }
+  }
+
+  function handlePointer(clientX, clientY){
+
+    const now = performance.now();
+
+    if(now - lastPointerTime < 350){
+      return;
+    }
+
+    const result =
+      getBubbleFromPoint(clientX, clientY);
+
+    if(!result) return;
+
+    lastPointerTime = now;
+
+    selectBubbleByIndex(result.index);
+  }
+
+  document.addEventListener(
+    'pointerup',
+    function(event){
+
+      if(event.pointerType === 'mouse'){
+        return;
+      }
+
+      handlePointer(
+        event.clientX,
+        event.clientY
+      );
+
+    },
+    true
+  );
+
+  document.addEventListener(
+    'touchend',
+    function(event){
+
+      if(!event.changedTouches ||
+         !event.changedTouches.length){
+        return;
+      }
+
+      const touch =
+        event.changedTouches[0];
+
+      handlePointer(
+        touch.clientX,
+        touch.clientY
+      );
+
+    },
+    true
+  );
+
+  console.log(
+    'JARVIS COORDINATE TOUCH FINAL AKTIF'
+  );
+
+})();
+</script>
+<script>
+(function(){
+  function jarvisPanel(title, html){
+    let p=document.getElementById("jarvis-subpanel");
+    if(!p){
+      p=document.createElement("section");
+      p.id="jarvis-subpanel";
+      p.className="panel";
+      p.style.cssText="position:relative;z-index:50;margin:14px 0;";
+      const anchor=document.querySelector(".panel.chart")||document.body.firstElementChild;
+      if(anchor && anchor.parentNode) anchor.parentNode.insertBefore(p,anchor);
+      else document.body.prepend(p);
+    }
+    p.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><b>'+title+'</b><button type="button" onclick="closeJarvisPanel()">KAPAT</button></div><div style="margin-top:10px">'+html+'</div>';
+    p.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+  window.closeJarvisPanel=function(){
+    const p=document.getElementById("jarvis-subpanel");
+    if(p) p.remove();
+  };
+  window.cancelJarvisOrder=async function(orderId,clientId){
+    if(!window.jarvisLiveTrading){
+      alert("Gerçek işlem modu kapalı. Emir iptali şu anda devre dışı.");
+      return;
+    }
+    if(!confirm("Bu gerçek emri iptal etmek istediğine emin misin?")) return;
+    const body={confirm:"CANCEL_REAL_ORDER"};
+    if(orderId!==undefined && orderId!==null && String(orderId)!=="") body.orderId=orderId;
+    else if(clientId) body.clientId=clientId;
+    else { alert("Emir kimliği bulunamadı."); return; }
+    try{
+      const r=await fetch("/api/order/cancel",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+      const x=await r.json();
+      if(!r.ok) throw new Error(x.error||"İptal başarısız");
+      alert("Emir iptal edildi.");
+      window.showOrders();
+    }catch(e){ alert("Emir iptal edilemedi: "+e.message); }
+  };
+
+})();
+</script>
+<!-- JARVIS FINAL VOICE BRIDGE -->
+</body>
+</html>

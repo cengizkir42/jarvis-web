@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: jarvis-v17
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt gunicorn
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: JARVIS_REAL_TRADING
+        value: "false"
+      - key: BINANCE_TR_API_KEY
+        sync: false
+      - key: BINANCE_TR_API_SECRET
+        sync: false
+      - key: BINANCE_TR_BASE_URL
+        value: "https://www.binance.tr"
+      - key: BINANCE_RECV_WINDOW
+        value: "5000"

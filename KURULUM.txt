@@ -1,0 +1,26 @@
+JARVIS V10 — TABLET HOLOGRAPHIC COMMAND CENTER
+
+Bu paket kendi başına Flask ile çalışacak şekilde düzenlenmiştir.
+
+TERMUX:
+1) ZIP'i aç.
+2) Klasöre gir.
+3) pip install -r requirements.txt
+4) python app.py
+5) Tarayıcıda http://127.0.0.1:5000 aç.
+
+GÜVENLİK:
+- Gerçek işlem varsayılan olarak KAPALI.
+- API anahtarı ve secret pakete dahil değildir.
+- .env.example yalnızca örnektir.
+- Gerçek emir gönderme ve iptal, backend'in açık güvenlik onayları olmadan çalışmaz.
+
+V10 KONTROLLERİ:
+- V9'daki __pycache__/pyc dosyaları paketten çıkarıldı.
+- Bozuk iç içe script etiketi düzeltildi ve JavaScript syntax kontrolünden geçirildi.
+- Açık Emirler artık seçili sembolle /api/orders çağırıyor.
+- /api/order/cancel frontend'e bağlandı; gerçek işlem kapalıyken iptal göndermez.
+- Eski sabit BTC/bakiye değerleri kaldırılmış durumda.
+- Duplicate history push tekilleştirildi.
+- Gereksiz duplicate saat interval'i kaldırıldı.
+- Tablet/orbit sistemi değiştirilmedi.

@@ -1,0 +1,25 @@
+JARVIS V17 — WEB / TERMUX BAGIMSIZ SURUM
+
+Bu paket V17'nin calisan dosyalarini degistirmez. Sadece web hosting icin deployment dosyasi eklenmistir.
+
+HEDEF:
+Telefon/tablet/bilgisayar tarayicisindan internet uzerinden acilan JARVIS.
+Termux kullanmak gerekmez.
+
+RENDER AYARLARI:
+- Service: Web Service
+- Runtime: Python
+- Build: pip install -r requirements.txt gunicorn
+- Start: gunicorn --bind 0.0.0.0:$PORT app:app
+- Plan: Free
+
+GUVELIK:
+- JARVIS_REAL_TRADING=false olarak sabit baslatilir.
+- API Key ve API Secret pakete yazilmaz.
+- Gercek emir modu bu web paketinde acilmaz.
+
+NOT:
+Render Free servisleri 15 dakika trafik olmadiginda uykuya gecebileceginden ilk acilista yaklasik bir dakikalik baslangic gorulebilir.
+
+V17 ORIJINALI:
+Orijinal V17 ZIP'i ayri tutulmalidir. Bu klasor V17'yi degistirmek yerine sadece deployment metadata'si eklenmis kopyadir.
